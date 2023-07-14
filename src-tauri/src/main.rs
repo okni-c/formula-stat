@@ -11,7 +11,7 @@ struct Record {
 
 fn main() {
     tauri::Builder::default()
-        .invoke_handler(tauri::generate_handler![greet, get_data, send_data])
+        .invoke_handler(tauri::generate_handler![greet, get_data, send_data, send_all_data])
         .run(tauri::generate_context!())
         .expect("error while running tauri application");
 }
@@ -33,4 +33,19 @@ fn send_data() -> Record {
     source: String::from("Opal"),
   };
   return r1;
+}
+
+#[tauri::command]
+fn send_all_data() -> Vec<Record> {
+  let r1 = Record {
+    id: 1,
+    source: String::from("Opal"),
+  };
+  let r2 = Record {
+    id: 2,
+    source: String::from("Opal Baby"),
+  };
+
+  let x: Vec<Record> = vec![r1,r2];
+  return x;
 }
