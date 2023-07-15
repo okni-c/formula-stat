@@ -2,6 +2,8 @@
 
 import Link from "next/link";
 import { usePathname } from 'next/navigation'
+// import { appWindow } from "@tauri-apps/api/window"
+// import { useEffect } from "react";
 
 export default function NavBar() {
     const pathname = usePathname();
@@ -10,9 +12,28 @@ export default function NavBar() {
     const isActiveRoute = (path: string) => {
         return pathname === path;
     };
+    // Function to handle changing window title bar to the current route and format the text
+    // useEffect(() => {
+    //     async function updateTitle() {
+    //         try {
+    //             // Format Pathname for Titlebar
+    //             const pathConvert = (path: string) => {
+    //                 // Remove the leading slash and convert to lowercase
+    //                 const formattedPath = path.slice(1).toLowerCase();
+    //                 // Capitalize the first letter
+    //                 const formattedText = formattedPath.charAt(0).toUpperCase() + formattedPath.slice(1);
+    //                 return formattedText;
+    //             }
+    //             await appWindow.setTitle(pathConvert(pathname))
+    //         } catch (error) {
+    //             console.error(error)
+    //         }
+    //     }
+    //     updateTitle()
+    // }, [pathname])
 
     return (
-        <nav className="w-full max-w-[9rem] h-screen shadow-lg dark:bg-neutral-900 bg-white">
+        <nav className="w-full max-w-[9rem] h-screen shadow-lg dark:bg-neutral-900 bg-white fixed">
             <div className="flex flex-col justify-start h-[100%]">
                 <Link href="/" className="mb-[61px] mt-5"><img src="/f1-logo.png" alt="F1 Logo" width={107} height={62} className=" ml-3 brightness-0 dark:invert-[1] invert-0" /></Link>
 

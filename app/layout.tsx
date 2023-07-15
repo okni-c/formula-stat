@@ -14,10 +14,12 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en" className='bg-gradient-to-b dark:from-red-950 dark:to-black from-red-200 to-white'>
-      <body className='flex'>
+      <body className=''>
         <NavBar />
-        {children}
-        </body>
+        <div className='ml-[9rem] flex'>
+          {children}
+        </div>
+      </body>
     </html>
   )
 }

@@ -7,12 +7,12 @@
     "distDir": "../out"
   },
   "package": {
-    "productName": "Brother App",
+    "productName": "FormulaStat Alpha",
     "version": "0.1.0"
   },
   "tauri": {
     "allowlist": {
-      "all": false
+      "all": true
     },
     "bundle": {
       "active": true,
@@ -58,7 +58,7 @@
         "fullscreen": false,
         "height": 600,
         "resizable": true,
-        "title": "Brother App",
+        "title": "FormulaStat",
         "width": 800
       }
     ]

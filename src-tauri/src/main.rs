@@ -3,7 +3,8 @@
 #![cfg_attr(not(debug_assertions), windows_subsystem = "windows")]
 
 use serde::{Serialize,Deserialize};
-use rand::{seq::SliceRandom};
+use rand::seq::SliceRandom;
+
 
 #[derive(Serialize,Clone,Deserialize)]
 struct Record {
