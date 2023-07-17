@@ -10,8 +10,10 @@ use rusqlite::{Connection, params};
 use std::error::Error;
 use std::fs::File;
 use csv::ReaderBuilder;
+use serde::Serialize;
 
 #[derive(Debug)]
+#[derive(Serialize)]
 pub struct Races {
     race_id: i64,
     year: i64,
@@ -32,6 +34,34 @@ pub struct Races {
     sprint_date: String,
     sprint_time: String,
     country: String,
+}
+
+#[derive(Debug)]
+#[derive(Serialize)]
+pub struct Driver {
+    driver_id: String,
+    driver_ref: String,
+    number: i64,
+    code: String,
+    forename: String,
+    surename: String,
+    dob: String,
+    nationality: String,
+    url: String,
+}
+
+#[derive(Debug)]
+#[derive(Serialize)]
+pub struct Circuit {
+    circuit_id: i64,
+    circuit_ref: String,
+    name: String,
+    location: String,
+    country: String,
+    lat: String,
+    lng: String,
+    alt: String,
+    url: String
 }
 
 pub fn connect_to_db() -> Result<Connection, Box<dyn Error>> {
@@ -97,7 +127,6 @@ pub fn create_tables() -> Result<(), Box<dyn Error>> {
     )?;
     println!("TABLE CREATED: drivers");
 
-    conn.close();
     Ok(())
 }
 
@@ -114,8 +143,6 @@ pub fn populate_tables_via_csv() -> Result<(), Box<dyn Error>>{
     //Circuits
     let sql_rows: i64 = conn.query_row("SELECT COUNT(*) FROM circuits", [], |row| row.get(0))?;
     circuits_csv(&conn, sql_rows, String::from("data/circuits.csv"));
-
-    conn.close();
 
     Ok(())
 }
@@ -270,11 +297,13 @@ fn circuits_csv(conn: &Connection, sql_rows: i64, filepath: String) {
 }
 
 pub fn get_races(year: String) -> Result<Vec<Races>, Box<dyn Error>> {
+    // Connect to f1_db and get all races in the given year
     let conn: Connection = connect_to_db()?;
-    
     let mut races_statement = conn.prepare("SELECT * FROM races WHERE year = ?1")?;
     let mut rows = races_statement.query([year])?;
     let mut races: Vec<Races> = Vec::new();
+
+    // Create a Races Object from each queried row and push it into a vector
     while let Some(row) = rows.next()? {
         let race_id: i64 = row.get(0)?;
         let year: i64 = row.get(1)?;
@@ -321,4 +350,80 @@ pub fn get_races(year: String) -> Result<Vec<Races>, Box<dyn Error>> {
         races.push(x)
     }
     Ok(races)
+}
+
+/*
+Given the driver_id, query the table drivers for that drivers information.
+@returns: Object of the driver
+*/
+pub fn get_driver(driver_id: String) -> Result<Driver, rusqlite::Error> {
+    // Connect to f1_db and get the driver from the table drivers where driver_id
+    let conn: Connection = connect_to_db().expect("ERROR: Unable to connect to database");
+    let mut driver_statement = conn.prepare("SELECT * FROM drivers WHERE driver_id = ?1")?;
+    let mut rows = driver_statement.query([driver_id])?;
+
+    // Create a Driver object
+    let mut x: Option<Driver> = None;
+    while let Some(row) = rows.next()? {
+        let driver_id: String = row.get(0)?;
+        let driver_ref: String = row.get(1)?;
+        let number: i64 = row.get(2)?;
+        let code: String = row.get(3)?;
+        let forename: String = row.get(4)?;
+        let surename: String = row.get(5)?;
+        let dob: String = row.get(6)?;
+        let nationality: String = row.get(7)?;
+        let url: String = row.get(8)?;
+
+        x = Some(Driver {
+            driver_id: driver_id,
+            driver_ref: driver_ref,
+            number: number,
+            code: code,
+            forename: forename,
+            surename: surename,
+            dob: dob,
+            nationality: nationality,
+            url: url
+        });
+    }
+    x.ok_or_else(|| rusqlite::Error::QueryReturnedNoRows)
+}
+
+/*
+Given the circuit_id, query the table circuits for that circuit information.
+@returns: Object of the driver
+*/
+pub fn get_circuit(circuit_id: String) -> Result<Circuit, rusqlite::Error> {
+    // Connect to f1_db and get the driver from the table drivers where driver_id
+    let conn: Connection = connect_to_db().expect("ERROR: Unable to connect to database");
+    let mut driver_statement = conn.prepare("SELECT * FROM circuits WHERE circuit_id = ?1")?;
+    let mut rows = driver_statement.query([circuit_id])?;
+
+    // Create a Circuit object
+    let mut x: Option<Circuit> = None;
+    while let Some(row) = rows.next()? {
+        let circuit_id: i64 = row.get(0)?;
+        let circuit_ref: String = row.get(1)?;
+        let name: String = row.get(2)?;
+        let location: String = row.get(3)?;
+        let country: String = row.get(4)?;
+        let lat: String = row.get(5)?;
+        let lng: String = row.get(6)?;
+        let alt: String = row.get(7)?;
+        let url: String = row.get(8)?;
+
+        x = Some(Circuit {
+            circuit_id: circuit_id,
+            circuit_ref: circuit_ref,
+            name: name,
+            location: location,
+            country: country,
+            lat: lat,
+            lng: lng,
+            alt: alt,
+            url: url
+        });
+    }
+    x.ok_or_else(|| rusqlite::Error::QueryReturnedNoRows)
 }
