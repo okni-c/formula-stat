@@ -1,3 +1,11 @@
+/*
+TODO:
+*   [] Get Country of Citcuit
+*   [] Format Country to Country Code
+*   [] Get the winner of the circuit if there is one
+
+*/
+
 use rusqlite::{Connection, params};
 use std::error::Error;
 use std::fs::File;

@@ -13,8 +13,6 @@ mod database;
 fn main() -> Result<(), Box<dyn Error>> {
   database::create_tables()?;
   database::populate_tables_via_csv()?;
-  let x: Vec<database::Races> = database::get_races(String::from("2023"))?;
-  println!("{:?}",x);
 
   tauri::Builder::default()
       .invoke_handler(tauri::generate_handler![greet])
@@ -30,3 +28,8 @@ fn greet(name: &str) -> String {
 }
 
 
+#[tauri::command]
+fn get_races(year: &str) -> Vec<database::Races> {
+  let races: Vec<database::Races> = database::get_races(String::from("2023")).expect("ERROR: Unable to get races");
+  return races
+}
