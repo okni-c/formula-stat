@@ -1,11 +1,28 @@
 'use client'
 
 import { AnimatePresence, motion } from 'framer-motion'
+import { useEffect, useState } from 'react'
+import { invoke } from '@tauri-apps/api/tauri'
 import RacePageHeader from '../components/RacePageHeader'
 import ListBlock from '../components/ListBlock'
 import RaceBlock from '../components/RaceBlock'
 
 export default function RacePage() {
+    const [data, setData] = useState([]);
+    useEffect(() => {
+        invoke<any>('get_races', { year: '2023' })
+          .then((response) => {
+            setData(response);
+          })
+          .catch(console.error);
+      }, []);
+      console.log(data)
+
+      interface YearlyRaceDataTypes {
+        circuit_id: string,
+        name: string,
+        date: string,
+      }
     return (
         <AnimatePresence>
             <motion.main className="min-h-screen max-w-5xl w-full mx-auto px-10 overflow-hidden justify-center"
@@ -16,20 +33,12 @@ export default function RacePage() {
                     duration: 0.1,
                     delay: 0.1
                 }}>
-                    <RacePageHeader heading="Up Next:" subtitle="Miami Qualifying" />
-                    <ListBlock title={'Past Events'}>
-                        <RaceBlock location={'Chinese GP'} winner={'Lewis Hamilton'} date={'Jul 10th, 2023'} flagcode={'cn'} />
-                        <RaceBlock location={'Chinese GP'} winner={'Lewis Hamilton'} date={'Jul 10th, 2023'} flagcode={'cn'} />
-                        <RaceBlock location={'Chinese GP'} winner={'Lewis Hamilton'} date={'Jul 10th, 2023'} flagcode={'cn'} />
-                        <RaceBlock location={'Chinese GP'} winner={'Lewis Hamilton'} date={'Jul 10th, 2023'} flagcode={'cn'} />
-                        <RaceBlock location={'Miami'} winner={'Lewis Hamilton'} date={'Jan 10th, 2023'} flagcode={'usa'} />
-                        <RaceBlock location={'Japan GP'} winner={'Lewis Hamilton'} date={'Aug 10th, 2023'} flagcode={'jp'} />
-                        <RaceBlock location={'Japan GP'} winner={'Lewis Hamilton'} date={'Aug 10th, 2023'} flagcode={'jp'} />
-                        <RaceBlock location={'Japan GP'} winner={'Lewis Hamilton'} date={'Aug 10th, 2023'} flagcode={'jp'} />
-                        <RaceBlock location={'Japan GP'} winner={'Lewis Hamilton'} date={'Aug 10th, 2023'} flagcode={'jp'} />
-                        <RaceBlock location={'Japan GP'} winner={'Lewis Hamilton'} date={'Aug 10th, 2023'} flagcode={'jp'} />
-                        <RaceBlock location={'Japan GP'} winner={'Lewis Hamilton'} date={'Aug 10th, 2023'} flagcode={'jp'} />
-                    </ListBlock>
+                <RacePageHeader heading="Up Next:" subtitle="Miami Qualifying" />
+                <ListBlock title={'All Events'}>
+                    {data && data.map((data: YearlyRaceDataTypes) =>
+                        <RaceBlock key={data.circuit_id} location={data.name} winner={'NULL'} date={data.date} flagcode={'cn'} />
+                    )}
+                </ListBlock>
             </motion.main>
         </AnimatePresence>
     )

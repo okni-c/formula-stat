@@ -23,7 +23,7 @@ fn main() {
   }
 
   tauri::Builder::default()
-      .invoke_handler(tauri::generate_handler![greet, get_data, send_data, send_all_data])
+      .invoke_handler(tauri::generate_handler![greet, get_races])
       .run(tauri::generate_context!())
       .expect("error while running tauri application");
 }
@@ -39,25 +39,7 @@ fn get_data() -> String {
 }
 
 #[tauri::command]
-fn send_data() -> Record {
-  let r1 = Record {
-    id: 1,
-    source: String::from("Opal"),
-  };
-  return r1;
-}
-
-#[tauri::command]
-fn send_all_data(people: Vec<Record>) -> Vec<Record> {
-  return people;
-}
-
-fn create_record(id:i8) -> Record {
-  let names: Vec<&str> = vec!["Opal","Marc","Dallas"];
-  let name: String = names.choose(&mut rand::thread_rng()).unwrap().to_string();
-  let record: Record = Record{
-    id:id,
-    source:name,
-  };
-  return record;
+fn get_races(year: &str) -> Vec<database::Races> {
+  let races: Vec<database::Races> = database::get_races(year.to_string()).expect("ERROR: Unable to get races");
+  return races
 }

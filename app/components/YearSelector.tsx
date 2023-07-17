@@ -26,7 +26,7 @@ export default function YearSelector() {
 
                             {year && year.map((year: any) =>
 
-                                <Link href={'/races/' + year.year} className="hover:dark:bg-zinc-300 rounded-lg hover:bg-zinc-200 hover:text-black dark:text-white text-black text-lg my-1 py-1 px-5 duration-150 ease-in-out self-center"><span className={pathname.startsWith('/races/'+year.year) ? 'font-black' : ''}>{year.year}</span></Link>
+                                <Link key={year} href={'/races/' + year.year} className="hover:dark:bg-zinc-300 rounded-lg hover:bg-zinc-200 hover:text-black dark:text-white text-black text-lg my-1 py-1 px-5 duration-150 ease-in-out self-center"><span className={pathname.startsWith('/races/'+year.year) ? 'font-black' : ''}>{year.year}</span></Link>
                             )}
                         </div>
                     </nav>
