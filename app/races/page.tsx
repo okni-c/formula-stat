@@ -8,15 +8,14 @@ import ListBlock from '../components/ListBlock'
 import RaceBlock from '../components/RaceBlock'
 
 export default function RacePage() {
-    const [data, setData] = useState([]);
+    const [race, setRace] = useState([]);
     useEffect(() => {
         invoke<any>('get_races', { year: '2023' })
           .then((response) => {
-            setData(response);
+            setRace(response);
           })
           .catch(console.error);
       }, []);
-      console.log(data)
 
       interface YearlyRaceDataTypes {
         circuit_id: string,
@@ -35,8 +34,8 @@ export default function RacePage() {
                 }}>
                 <RacePageHeader heading="Up Next:" subtitle="Miami Qualifying" />
                 <ListBlock title={'All Events'}>
-                    {data && data.map((data: YearlyRaceDataTypes) =>
-                        <RaceBlock key={data.circuit_id} location={data.name} winner={'NULL'} date={data.date} flagcode={'cn'} />
+                    {race && race.map((race: YearlyRaceDataTypes) =>
+                        <RaceBlock key={race.circuit_id} circuitName={race.name} winner={'NULL'} date={race.date} flagcode={'cn'} />
                     )}
                 </ListBlock>
             </motion.main>
