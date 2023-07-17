@@ -8,6 +8,7 @@
     *   [IN DESKTOP](#in-desktop)
 * [Design](#design)
     *   [HOMEPAGE](#homepage)
+    *   [DRIVER PAGE](#driver-page)
 * [CONTRIBUTORS](#contributors)
 
 ## ABOUT
@@ -31,6 +32,11 @@ Installed npm packages
 Description
 
 ![homepage](designs/home_page.png)
+
+### DRIVER PAGE
+Description
+
+![driverpage](designs/driver_page.png)
 
 ## CONTRIBUTORS
 *   [Kevin Yatsinko](https://github.com/okni-c)
