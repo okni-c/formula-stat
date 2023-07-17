@@ -1,8 +1,7 @@
 /*
 TODO:
-*   [] Get Country of Citcuit
-*   [] Format Country to Country Code
-*   [] Get the winner of the circuit if there is one
+*   [x] Get Country of Citcuit
+*   [x] Get Country Code of Country
 
 */
 
@@ -11,6 +10,7 @@ use std::error::Error;
 use std::fs::File;
 use csv::ReaderBuilder;
 use serde::Serialize;
+use std::collections::HashMap;
 
 #[derive(Debug)]
 #[derive(Serialize)]
@@ -34,6 +34,7 @@ pub struct Races {
     sprint_date: String,
     sprint_time: String,
     country: String,
+    country_code: String,
 }
 
 #[derive(Debug)]
@@ -64,11 +65,17 @@ pub struct Circuit {
     url: String
 }
 
+/*
+Establish a Connection to the f1_db and return that connection
+*/
 pub fn connect_to_db() -> Result<Connection, Box<dyn Error>> {
     let conn: Connection = Connection::open("f1.db").expect("ERROR: Unable to connect to f1.db");
     Ok(conn)
 }
 
+/*
+Going to create all tables if they dont exists
+*/
 pub fn create_tables() -> Result<(), Box<dyn Error>> {
     let conn: Connection = connect_to_db()?;
     println!("Initalizing F1.db");
@@ -130,6 +137,9 @@ pub fn create_tables() -> Result<(), Box<dyn Error>> {
     Ok(())
 }
 
+/*
+Populating all tables with thier respective CSV if they dont match in size; Else they are already populated
+*/
 pub fn populate_tables_via_csv() -> Result<(), Box<dyn Error>>{
     let conn: Connection = connect_to_db()?;
     // Races
@@ -147,6 +157,9 @@ pub fn populate_tables_via_csv() -> Result<(), Box<dyn Error>>{
     Ok(())
 }
 
+/*
+Reads the races.csv and populates the races table with all rows
+*/
 fn races_csv(conn: &Connection, sql_rows: i64, filepath: String) {
     let file = File::open(filepath.clone()).expect("ERROR: Unable to access CSV");
     let mut reader = ReaderBuilder::new().flexible(true).from_reader(file);
@@ -210,6 +223,9 @@ fn races_csv(conn: &Connection, sql_rows: i64, filepath: String) {
 
 }
 
+/*
+Reads the drivers.csv and populates the drivers table with all rows
+*/
 fn drivers_csv(conn: &Connection, sql_rows: i64, filepath: String) {
     let file = File::open(filepath.clone()).expect("ERROR: Unable to access CSV");
     let mut reader = ReaderBuilder::new().flexible(true).from_reader(file);
@@ -253,6 +269,9 @@ fn drivers_csv(conn: &Connection, sql_rows: i64, filepath: String) {
 
 }
 
+/*
+Reads the circuits.csv and populates the circuits table with all rows
+*/
 fn circuits_csv(conn: &Connection, sql_rows: i64, filepath: String) {
     let file = File::open(filepath.clone()).expect("ERROR: Unable to access CSV");
     let mut reader = ReaderBuilder::new().flexible(true).from_reader(file);
@@ -296,6 +315,10 @@ fn circuits_csv(conn: &Connection, sql_rows: i64, filepath: String) {
 
 }
 
+/*
+Query all races of a given year into Races Objects
+@return: vector of Races
+*/
 pub fn get_races(year: String) -> Result<Vec<Races>, Box<dyn Error>> {
     // Connect to f1_db and get all races in the given year
     let conn: Connection = connect_to_db()?;
@@ -325,6 +348,7 @@ pub fn get_races(year: String) -> Result<Vec<Races>, Box<dyn Error>> {
         let sprint_time: String = row.get(17)?;
         let mut circuits_statement = conn.prepare("SELECT country FROM circuits WHERE circuitId = ?1")?;
         let country: String = circuits_statement.query_row([circuit_id], |row| row.get(0))?;
+        let country_code: String = get_country_code(country.clone());
 
         let x: Races = Races {
             race_id: race_id,
@@ -345,7 +369,8 @@ pub fn get_races(year: String) -> Result<Vec<Races>, Box<dyn Error>> {
             quali_time: quali_time,
             sprint_date: sprint_date,
             sprint_time: sprint_time,
-            country: country
+            country: country,
+            country_code: country_code
         };
         races.push(x)
     }
@@ -426,4 +451,58 @@ pub fn get_circuit(circuit_id: String) -> Result<Circuit, rusqlite::Error> {
         });
     }
     x.ok_or_else(|| rusqlite::Error::QueryReturnedNoRows)
+}
+
+fn get_country_code(country:String) -> String {
+    let mut country_dict: HashMap<&str, &str> = HashMap::new();
+    country_dict.insert("Australia", "036");
+    country_dict.insert("Malaysia", "458");
+    country_dict.insert("Bahrain", "048");
+    country_dict.insert("Spain", "724");
+    country_dict.insert("Turkey", "792");
+    country_dict.insert("Monaco", "492");
+    country_dict.insert("Canada", "124");
+    country_dict.insert("France", "250");
+    country_dict.insert("UK", "826");
+    country_dict.insert("Germany", "276");
+    country_dict.insert("Hungary", "348");
+    country_dict.insert("Belgium", "056");
+    country_dict.insert("Italy", "380");
+    country_dict.insert("Singapore", "702");
+    country_dict.insert("Japan", "392");
+    country_dict.insert("China", "156");
+    country_dict.insert("Brazil", "076");
+    country_dict.insert("USA", "840");
+    country_dict.insert("United States", "840");
+    country_dict.insert("UAE", "784");
+    country_dict.insert("Argentina", "032");
+    country_dict.insert("Portugal", "620");
+    country_dict.insert("South Africa", "710");
+    country_dict.insert("Mexico", "484");
+    country_dict.insert("Korea", "410");
+    country_dict.insert("Netherlands", "528");
+    country_dict.insert("Sweden", "752");
+    country_dict.insert("Austria", "040");
+    country_dict.insert("Morocco", "504");
+    country_dict.insert("Switzerland", "756");
+    country_dict.insert("India", "356");
+    country_dict.insert("Saudi Arabia", "682");
+    country_dict.insert("Russia", "643");
+    country_dict.insert("Azerbaijan", "031");
+    country_dict.insert("Qatar", "634");
+    country_dict.insert("Finland", "246");
+    country_dict.insert("Poland", "616");
+    country_dict.insert("Colombia", "170");
+    country_dict.insert("Czechia", "203");
+    country_dict.insert("Monaco", "492");
+    country_dict.insert("New Zealand", "554");
+    country_dict.insert("Denmakr", "208");
+    country_dict.insert("Zimbabwe", "716");
+    country_dict.insert("Venezuela", "862");
+    country_dict.insert("Uruguay", "858");
+
+    let code: String = country_dict.get(country.as_str()).unwrap_or(&"ERROR: Code not found").to_string();
+
+    return code;
+    
 }
