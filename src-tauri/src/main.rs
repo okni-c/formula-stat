@@ -31,5 +31,6 @@ fn greet(name: &str) -> String {
 #[tauri::command]
 fn get_races(year: &str) -> Vec<database::Races> {
   let races: Vec<database::Races> = database::get_races(String::from("2023")).expect("ERROR: Unable to get races");
+  println!("{:?}",races);
   return races
 }

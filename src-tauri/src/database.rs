@@ -31,6 +31,7 @@ pub struct Races {
     quali_time: String,
     sprint_date: String,
     sprint_time: String,
+    country: String,
 }
 
 pub fn connect_to_db() -> Result<Connection, Box<dyn Error>> {
@@ -271,8 +272,8 @@ fn circuits_csv(conn: &Connection, sql_rows: i64, filepath: String) {
 pub fn get_races(year: String) -> Result<Vec<Races>, Box<dyn Error>> {
     let conn: Connection = connect_to_db()?;
     
-    let mut statement = conn.prepare("SELECT * FROM races WHERE year = ?1")?;
-    let mut rows = statement.query([year])?;
+    let mut races_statement = conn.prepare("SELECT * FROM races WHERE year = ?1")?;
+    let mut rows = races_statement.query([year])?;
     let mut races: Vec<Races> = Vec::new();
     while let Some(row) = rows.next()? {
         let race_id: i64 = row.get(0)?;
@@ -293,6 +294,9 @@ pub fn get_races(year: String) -> Result<Vec<Races>, Box<dyn Error>> {
         let quali_time: String = row.get(15)?;
         let sprint_date: String = row.get(16)?;
         let sprint_time: String = row.get(17)?;
+        let mut circuits_statement = conn.prepare("SELECT country FROM circuits WHERE circuitId = ?1")?;
+        let country: String = circuits_statement.query_row([circuit_id], |row| row.get(0))?;
+
         let x: Races = Races {
             race_id: race_id,
             year: year,
@@ -311,7 +315,8 @@ pub fn get_races(year: String) -> Result<Vec<Races>, Box<dyn Error>> {
             quai_date: quai_date,
             quali_time: quali_time,
             sprint_date: sprint_date,
-            sprint_time: sprint_time
+            sprint_time: sprint_time,
+            country: country
         };
         races.push(x)
     }
