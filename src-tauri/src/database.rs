@@ -258,6 +258,15 @@ pub fn create_tables() -> Result<(), Box<dyn Error>> {
     )?;
     println!("TABLE CREATED: constructorResults");
 
+    conn.execute(
+        "CREATE TABLE IF NOT EXISTS status (
+            statusId INTEGER,
+            status TEXT DEFAULT '',
+            PRIMARY KEY (statusId)
+        )", [],
+    )?;
+    println!("TABLE CREATED: status");
+
     Ok(())
 }
 
@@ -306,10 +315,13 @@ pub fn populate_tables_via_csv() -> Result<(), Box<dyn Error>>{
     let sql_rows: i64 = conn.query_row("SELECT COUNT(*) FROM constructorResults", [], |row| row.get(0))?;
     constructor_results_csv(&conn, sql_rows, String::from("data/constructor_results.csv"));
 
-
     // Circuits
     let sql_rows: i64 = conn.query_row("SELECT COUNT(*) FROM circuits", [], |row| row.get(0))?;
     circuits_csv(&conn, sql_rows, String::from("data/circuits.csv"));
+
+    // Status
+    let sql_rows: i64 = conn.query_row("SELECT COUNT(*) FROM status", [], |row| row.get(0))?;
+    status_csv(&conn, sql_rows, String::from("data/status.csv"));
 
     Ok(())
 }
@@ -842,6 +854,38 @@ fn circuits_csv(conn: &Connection, sql_rows: i64, filepath: String) {
         println!("circuits TABLE POPULATED VIA CSV");
     } else {
         println!("circuits TABLE ALREADY UP-TO-DATE");
+    }
+
+}
+
+/*
+Reads the status.csv and populates the status table with all rows
+*/
+fn status_csv(conn: &Connection, sql_rows: i64, filepath: String) {
+    let file = File::open(filepath.clone()).expect("ERROR: Unable to access CSV");
+    let mut reader = ReaderBuilder::new().flexible(true).from_reader(file);
+    let csv_rows: usize = reader.records().count();
+    if sql_rows != csv_rows as i64 {
+        let file = File::open(filepath).expect("ERROR: Unable to access CSV");
+        let mut reader = ReaderBuilder::new().flexible(true).from_reader(file);
+        for row in reader.records() {
+            let record = row.expect("ERROR: Unable to access row");
+            let status_id = &record[0];
+            let status = &record[1];
+
+            conn.execute(
+                "INSERT INTO status (
+                    statusId,
+                    status
+                ) VALUES (?1, ?2)", 
+                params![
+                    status_id,status,
+                    ],
+                ).expect("ERROR: Unable to Insert status Row");
+        }
+        println!("status TABLE POPULATED VIA CSV");
+    } else {
+        println!("circstatusuits TABLE ALREADY UP-TO-DATE");
     }
 
 }
