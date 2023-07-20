@@ -1,10 +1,3 @@
-/*
-TODO:
-*   [x] Get Country of Citcuit
-*   [x] Get Country Code of Country
-
-*/
-
 use rusqlite::{Connection, params};
 use std::error::Error;
 use std::fs::File;
@@ -40,7 +33,7 @@ pub struct Races {
 #[derive(Debug)]
 #[derive(Serialize)]
 pub struct Driver {
-    driver_id: String,
+    driver_id: i64,
     driver_ref: String,
     number: i64,
     code: String,
@@ -49,6 +42,29 @@ pub struct Driver {
     dob: String,
     nationality: String,
     url: String,
+}
+
+#[derive(Debug)]
+#[derive(Serialize)]
+pub struct DriverStanding {
+    driver_id: i64,
+    points: i64,
+    position: i64,
+    wins: i64,
+    forename: String,
+    surename: String,
+    nationality: String,
+}
+
+#[derive(Debug)]
+#[derive(Serialize)]
+pub struct ConstructorStanding {
+    constructor_id: i64,
+    points: i64,
+    position: i64,
+    wins: i64,
+    name: String,
+    nationality: String,
 }
 
 #[derive(Debug)]
@@ -74,7 +90,7 @@ pub fn connect_to_db() -> Result<Connection, Box<dyn Error>> {
 }
 
 /*
-Going to create all tables if they dont exists
+Creates all required tables if they dont exists
 */
 pub fn create_tables() -> Result<(), Box<dyn Error>> {
     let conn: Connection = connect_to_db()?;
@@ -895,13 +911,11 @@ Query all races of a given year into Races Objects
 @return: vector of Races
 */
 pub fn get_races(year: String) -> Result<Vec<Races>, Box<dyn Error>> {
-    // Connect to f1_db and get all races in the given year
     let conn: Connection = connect_to_db()?;
     let mut races_statement = conn.prepare("SELECT * FROM races WHERE year = ?1")?;
     let mut rows = races_statement.query([year])?;
     let mut races: Vec<Races> = Vec::new();
 
-    // Create a Races Object from each queried row and push it into a vector
     while let Some(row) = rows.next()? {
         let race_id: i64 = row.get(0)?;
         let year: i64 = row.get(1)?;
@@ -925,7 +939,7 @@ pub fn get_races(year: String) -> Result<Vec<Races>, Box<dyn Error>> {
         let country: String = circuits_statement.query_row([circuit_id], |row| row.get(0))?;
         let country_code: String = get_country_code(country.clone());
 
-        let x: Races = Races {
+        let race: Races = Races {
             race_id: race_id,
             year: year,
             round: round,
@@ -947,7 +961,7 @@ pub fn get_races(year: String) -> Result<Vec<Races>, Box<dyn Error>> {
             country: country,
             country_code: country_code
         };
-        races.push(x)
+        races.push(race)
     }
     Ok(races)
 }
@@ -965,7 +979,7 @@ pub fn get_driver(driver_id: String) -> Result<Driver, rusqlite::Error> {
     // Create a Driver object
     let mut x: Option<Driver> = None;
     while let Some(row) = rows.next()? {
-        let driver_id: String = row.get(0)?;
+        let driver_id: i64 = row.get(0)?;
         let driver_ref: String = row.get(1)?;
         let number: i64 = row.get(2)?;
         let code: String = row.get(3)?;
@@ -1028,6 +1042,9 @@ pub fn get_circuit(circuit_id: String) -> Result<Circuit, rusqlite::Error> {
     x.ok_or_else(|| rusqlite::Error::QueryReturnedNoRows)
 }
 
+/*
+Given a Country, returns the countrys code for Next.js
+*/
 fn get_country_code(country:String) -> String {
     let mut country_dict: HashMap<&str, &str> = HashMap::new();
     country_dict.insert("Australia", "036");
@@ -1080,4 +1097,159 @@ fn get_country_code(country:String) -> String {
 
     return code;
     
+}
+
+/*
+@return: The nearest Grand Prix event for the homepage
+Information Needed:
+*   All data in the races table + country and countryId for flag
+*/
+pub fn home_page_next_event() -> Result<Races, rusqlite::Error>{
+    let conn: Connection = connect_to_db().expect("ERROR: Unable to connect to database");
+    let mut stmt = conn.prepare(
+        "SELECT * 
+        FROM races 
+        WHERE date = (
+            SELECT date 
+            FROM races 
+            WHERE date >= DATE('now') 
+            ORDER BY date ASC 
+            LIMIT 1
+        )")?;
+    let mut rows = stmt.query(params![])?;
+
+    let mut races: Option<Races> = None;
+    while let Some(row) = rows.next()? {
+        let race_id: i64 = row.get(0)?;
+        let year: i64 = row.get(1)?;
+        let round: i64 = row.get(2)?;
+        let circuit_id: i64 = row.get(3)?;
+        let name: String = row.get(4)?;
+        let date: String = row.get(5)?;
+        let time: String = row.get(6)?;
+        let url: String = row.get(7)?;
+        let fp1_date: String = row.get(8)?;
+        let fp1_time: String = row.get(9)?;
+        let fp2_date: String = row.get(10)?;
+        let fp2_time: String = row.get(11)?;
+        let fp3_date: String = row.get(12)?;
+        let fp3_time: String = row.get(13)?;
+        let quai_date: String = row.get(14)?;
+        let quali_time: String = row.get(15)?;
+        let sprint_date: String = row.get(16)?;
+        let sprint_time: String = row.get(17)?;
+        let mut circuits_statement = conn.prepare("SELECT country FROM circuits WHERE circuitId = ?1")?;
+        let country: String = circuits_statement.query_row([circuit_id], |row| row.get(0))?;
+        let country_code: String = get_country_code(country.clone());
+
+        races =  Some(Races {
+            race_id: race_id,
+            year: year,
+            round: round,
+            circuit_id: circuit_id,
+            name: name,
+            date: date,
+            time: time,
+            url: url,
+            fp1_date: fp1_date,
+            fp1_time: fp1_time,
+            fp2_date: fp2_date,
+            fp2_time: fp2_time,
+            fp3_date: fp3_date,
+            fp3_time: fp3_time,
+            quai_date: quai_date,
+            quali_time: quali_time,
+            sprint_date: sprint_date,
+            sprint_time: sprint_time,
+            country: country,
+            country_code: country_code
+        });
+    }
+    races.ok_or_else(|| rusqlite::Error::QueryReturnedNoRows)
+}
+
+/*
+@return: A Ascending DriverStanding Vector for the homepage
+Information Needed:
+*   DriverId, Poitns, Position, Wins, Forename, Surename, Nationality
+*/
+pub fn home_page_driver_standings() -> Result<Vec<DriverStanding>, rusqlite::Error> {
+    let conn: Connection = connect_to_db().expect("ERROR: Unable to connect to database");
+    let mut stmt = conn.prepare(
+        "SELECT ds.driverId, ds.points, ds.position, ds.wins, drivers.forename, drivers.surename, drivers.nationality
+        FROM driverStandings as ds
+        JOIN drivers ON ds.driverId = drivers.driverId
+        WHERE ds.raceId = (
+            SELECT MAX(raceId)
+            FROM driverStandings
+        )
+        ORDER BY position ASC
+        ")?;
+    let mut rows = stmt.query(params![])?;
+
+    // Vector of Driver Objects
+    let mut driver_standings: Vec<DriverStanding> = Vec::new();
+    while let Some(row) = rows.next()? {
+        let driver_id: i64 = row.get(0)?;
+        let points: i64 = row.get(1)?;
+        let position: i64 = row.get(2)?;
+        let wins: i64 =  row.get(3)?;
+        let forename: String = row.get(4)?;
+        let surename: String = row.get(5)?;
+        let nationality: String =  row.get(6)?;
+
+        let driver: DriverStanding = DriverStanding {
+            driver_id: driver_id,
+            points: points,
+            position: position,
+            wins: wins,
+            forename: forename,
+            surename: surename,
+            nationality: nationality
+        };
+        driver_standings.push(driver);
+    }
+    Ok(driver_standings)
+}
+
+/*
+@return: A Ascending ConstructorStanding Vector for the homepage
+Information Needed:
+*   ConstructorId, Poitns, Position, Wins, Name, Nationality
+*/
+pub fn home_page_constructor_standings() -> Result<Vec<ConstructorStanding>, rusqlite::Error> {
+    let conn: Connection = connect_to_db().expect("ERROR: Unable to connect to database");
+    let mut stmt = conn.prepare(
+        "SELECT cs.constructorId, cs.points, cs.position, cs.wins, constructors.name, constructors.nationality
+        FROM constructorStandings as cs
+        JOIN constructors ON cs.constructorId = constructors.constructorId
+        WHERE cs.raceId = (
+            SELECT MAX(raceId)
+            FROM constructorStandings
+        )
+        ORDER BY position ASC
+        ")?;
+    let mut rows = stmt.query(params![])?;
+
+    // Vector of ConstructorStanding Objects
+    let mut constructor_standings: Vec<ConstructorStanding> = Vec::new();
+    while let Some(row) = rows.next()? {
+        let constructor_id: i64 = row.get(0)?;
+        let points: i64 = row.get(1)?;
+        let position: i64 = row.get(2)?;
+        let wins: i64 =  row.get(3)?;
+        let name: String = row.get(4)?;
+        let nationality: String =  row.get(5)?;
+
+        let constructor: ConstructorStanding = ConstructorStanding {
+            constructor_id: constructor_id,
+            points: points,
+            position: position,
+            wins: wins,
+            name: name,
+            nationality: nationality
+        };
+        constructor_standings.push(constructor);
+    }
+    Ok(constructor_standings)
 }
