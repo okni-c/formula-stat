@@ -1,6 +1,11 @@
 "use client"
 
-import { AnimatePresence, motion } from "framer-motion";
+// import { AnimatePresence, motion } from "framer-motion";
+// motion.div
+//                     key="YearSelector"
+//                     initial={{ x: -100 }}
+//                     animate={{ x: 0 }}
+//                     exit={{ x: -100 }}
 import Link from "next/link";
 import { usePathname } from 'next/navigation'
 
@@ -10,13 +15,9 @@ export default function YearSelector() {
     const year = [{ year: '2022' }, { year: '2021' }, { year: '2020' }, { year: '2019' }, { year: '2018' }, { year: '2017' }, { year: '2016' }, { year: '2014' }, { year: '2013' }, { year: '2012' }, { year: '2011' }, { year: '2010' }];
 
     return (
-        <AnimatePresence>
+        <>
             {pathname.startsWith('/races') &&
-                <motion.div
-                    key="YearSelector"
-                    initial={{ x: -100 }}
-                    animate={{ x: 0 }}
-                    exit={{ x: -100 }}>
+                <div key="YearSelector">
                     <nav className="z-[1] w-full max-w-[7rem] h-screen bg-black bg-opacity-20 shadow-lg fixed left-36">
                         <div className="flex flex-col justify-start h-[100%]">
 
@@ -30,8 +31,8 @@ export default function YearSelector() {
                             )}
                         </div>
                     </nav>
-                </motion.div>
+                </div>
             }
-        </AnimatePresence>
+        </>
     );
 }

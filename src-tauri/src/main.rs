@@ -5,6 +5,7 @@ use std::error::Error;
 mod database;
 
 fn main() -> Result<(), Box<dyn Error>> {
+  // Comment this out for debugging build
   database::create_tables()?;
   database::populate_tables_via_csv()?;
 
