@@ -1,34 +1,43 @@
-This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
+# MARC DALLAS APP
 
-## Getting Started
+## TABLE OF CONTENTS
+* [About](#about)
+* [Local Installation](#local-installation)
+* [Running](#running)
+    *   [IN BROWSER](#in-browser)
+    *   [IN DESKTOP](#in-desktop)
+* [Design](#design)
+    *   [HOMEPAGE](#homepage)
+    *   [DRIVER PAGE](#driver-page)
+* [CONTRIBUTORS](#contributors)
 
-First, run the development server:
+## ABOUT
+description
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-```
+## LOCAL INSTALLATION
+Installed npm packages
+> npm i
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+## RUNNING
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+### In Browser
+> npm run dev
 
-This project uses [`next/font`](https://nextjs.org/docs/basic-features/font-optimization) to automatically optimize and load Inter, a custom Google Font.
+### In Desktop
+> npm run tauri dev
 
-## Learn More
+## DESIGN
 
-To learn more about Next.js, take a look at the following resources:
+### HOMEPAGE
+Description
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+![homepage](designs/home_page.png)
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js/) - your feedback and contributions are welcome!
+### DRIVER PAGE
+Description
 
-## Deploy on Vercel
+![driverpage](designs/driver_page.png)
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/deployment) for more details.
+## CONTRIBUTORS
+*   [Kevin Yatsinko](https://github.com/okni-c)
+*   [Marc Ebersberger Jr](https://github.com/BlueMonkeyQ)
