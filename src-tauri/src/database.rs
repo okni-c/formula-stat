@@ -1,9 +1,12 @@
 use rusqlite::{Connection, params};
-use std::error::Error;
+use std::{error::Error, vec};
 use std::fs::File;
 use csv::ReaderBuilder;
 use serde::Serialize;
-use std::collections::HashMap;
+use chrono::{DateTime, Local, TimeZone, NaiveDate, NaiveTime, ParseError, Timelike, NaiveDateTime, Duration};
+
+use crate::func::{get_country_code_country, get_country_code_nationality, set_to_null_if_n, to_datetime, parse_datetime};
+
 
 #[derive(Debug)]
 #[derive(Serialize)]
@@ -42,6 +45,7 @@ pub struct Driver {
     dob: String,
     nationality: String,
     url: String,
+    country_code: String,
 }
 
 #[derive(Debug)]
@@ -54,6 +58,7 @@ pub struct DriverStanding {
     forename: String,
     surename: String,
     nationality: String,
+    country_code: String,
 }
 
 #[derive(Debug)]
@@ -65,6 +70,7 @@ pub struct ConstructorStanding {
     wins: i64,
     name: String,
     nationality: String,
+    country_code: String,
 }
 
 #[derive(Debug)]
@@ -922,22 +928,22 @@ pub fn get_races(year: String) -> Result<Vec<Races>, Box<dyn Error>> {
         let round: i64 = row.get(2)?;
         let circuit_id: i64 = row.get(3)?;
         let name: String = row.get(4)?;
-        let date: String = row.get(5)?;
-        let time: String = row.get(6)?;
+        let date: String = set_to_null_if_n(row.get(5)?);
+        let time: String = set_to_null_if_n(row.get(6)?);
         let url: String = row.get(7)?;
-        let fp1_date: String = row.get(8)?;
-        let fp1_time: String = row.get(9)?;
-        let fp2_date: String = row.get(10)?;
-        let fp2_time: String = row.get(11)?;
-        let fp3_date: String = row.get(12)?;
-        let fp3_time: String = row.get(13)?;
-        let quai_date: String = row.get(14)?;
-        let quali_time: String = row.get(15)?;
-        let sprint_date: String = row.get(16)?;
-        let sprint_time: String = row.get(17)?;
+        let fp1_date: String = set_to_null_if_n(row.get(8)?);
+        let fp1_time: String = set_to_null_if_n(row.get(9)?);
+        let fp2_date: String = set_to_null_if_n(row.get(10)?);
+        let fp2_time: String = set_to_null_if_n(row.get(11)?);
+        let fp3_date: String = set_to_null_if_n(row.get(12)?);
+        let fp3_time: String = set_to_null_if_n(row.get(13)?);
+        let quai_date: String = set_to_null_if_n(row.get(14)?);
+        let quali_time: String = set_to_null_if_n(row.get(15)?);
+        let sprint_date: String = set_to_null_if_n(row.get(16)?);
+        let sprint_time: String = set_to_null_if_n(row.get(17)?);
         let mut circuits_statement = conn.prepare("SELECT country FROM circuits WHERE circuitId = ?1")?;
         let country: String = circuits_statement.query_row([circuit_id], |row| row.get(0))?;
-        let country_code: String = get_country_code(country.clone());
+        let country_code: String = get_country_code_country(country.clone());
 
         let race: Races = Races {
             race_id: race_id,
@@ -988,6 +994,7 @@ pub fn get_driver(driver_id: String) -> Result<Driver, rusqlite::Error> {
         let dob: String = row.get(6)?;
         let nationality: String = row.get(7)?;
         let url: String = row.get(8)?;
+        let country_code: String = get_country_code_nationality(nationality.clone());
 
         x = Some(Driver {
             driver_id: driver_id,
@@ -998,7 +1005,8 @@ pub fn get_driver(driver_id: String) -> Result<Driver, rusqlite::Error> {
             surename: surename,
             dob: dob,
             nationality: nationality,
-            url: url
+            url: url,
+            country_code: country_code
         });
     }
     x.ok_or_else(|| rusqlite::Error::QueryReturnedNoRows)
@@ -1043,72 +1051,47 @@ pub fn get_circuit(circuit_id: String) -> Result<Circuit, rusqlite::Error> {
 }
 
 /*
-Given a Country, returns the countrys code for Next.js
-*/
-fn get_country_code(country:String) -> String {
-    let mut country_dict: HashMap<&str, &str> = HashMap::new();
-    country_dict.insert("Australia", "036");
-    country_dict.insert("Malaysia", "458");
-    country_dict.insert("Bahrain", "048");
-    country_dict.insert("Spain", "724");
-    country_dict.insert("Turkey", "792");
-    country_dict.insert("Monaco", "492");
-    country_dict.insert("Canada", "124");
-    country_dict.insert("France", "250");
-    country_dict.insert("UK", "826");
-    country_dict.insert("Germany", "276");
-    country_dict.insert("Hungary", "348");
-    country_dict.insert("Belgium", "056");
-    country_dict.insert("Italy", "380");
-    country_dict.insert("Singapore", "702");
-    country_dict.insert("Japan", "392");
-    country_dict.insert("China", "156");
-    country_dict.insert("Brazil", "076");
-    country_dict.insert("USA", "840");
-    country_dict.insert("United States", "840");
-    country_dict.insert("UAE", "784");
-    country_dict.insert("Argentina", "032");
-    country_dict.insert("Portugal", "620");
-    country_dict.insert("South Africa", "710");
-    country_dict.insert("Mexico", "484");
-    country_dict.insert("Korea", "410");
-    country_dict.insert("Netherlands", "528");
-    country_dict.insert("Sweden", "752");
-    country_dict.insert("Austria", "040");
-    country_dict.insert("Morocco", "504");
-    country_dict.insert("Switzerland", "756");
-    country_dict.insert("India", "356");
-    country_dict.insert("Saudi Arabia", "682");
-    country_dict.insert("Russia", "643");
-    country_dict.insert("Azerbaijan", "031");
-    country_dict.insert("Qatar", "634");
-    country_dict.insert("Finland", "246");
-    country_dict.insert("Poland", "616");
-    country_dict.insert("Colombia", "170");
-    country_dict.insert("Czechia", "203");
-    country_dict.insert("Monaco", "492");
-    country_dict.insert("New Zealand", "554");
-    country_dict.insert("Denmakr", "208");
-    country_dict.insert("Zimbabwe", "716");
-    country_dict.insert("Venezuela", "862");
-    country_dict.insert("Uruguay", "858");
-
-    let code: String = country_dict.get(country.as_str()).unwrap_or(&"ERROR: Code not found").to_string();
-
-    return code;
-    
-}
-
-/*
 @return: The nearest Grand Prix event for the homepage
 Information Needed:
 *   All data in the races table + country and countryId for flag
 */
-pub fn home_page_next_event() -> Result<Races, rusqlite::Error>{
+
+#[derive(Debug)]
+#[derive(Serialize)]
+pub struct NextEvent {
+    race_id: i64,
+    round: i64,
+    circuit_id: i64,
+    grand_prix_name: String,
+    grand_prix_date: String,
+    grand_prix_time: String,
+    fp1_date: String,
+    fp1_time: String,
+    fp2_date: String,
+    fp2_time: String,
+    fp3_date: String,
+    fp3_time: String,
+    sprint_date: String,
+    sprint_time: String,
+    quai_date: String,
+    quali_time: String,
+    next_event_name: String,
+    next_event_time: String,
+    country: String,
+    location: String,
+    country_code: String,
+}
+
+pub fn home_page_next_event() -> Result<NextEvent, rusqlite::Error>{
     let conn: Connection = connect_to_db().expect("ERROR: Unable to connect to database");
     let mut stmt = conn.prepare(
-        "SELECT * 
-        FROM races 
+        "SELECT 
+        r.raceId, r.round, r.circuitId, 
+        r.name, r.date, r.time, r.fp1_date, r.fp1_time, r.fp2_date, r.fp2_time, r.fp3_date, r.fp3_time, 
+        r.sprint_date, r.sprint_time, r.quali_date, r.quali_time, 
+        c.country, c.location
+        FROM races as r 
+        JOIN circuits as c ON r.circuitId = c.circuitId
         WHERE date = (
             SELECT date 
             FROM races 
@@ -1118,54 +1101,95 @@ pub fn home_page_next_event() -> Result<Races, rusqlite::Error>{
         )")?;
     let mut rows = stmt.query(params![])?;
 
-    let mut races: Option<Races> = None;
+    let mut next_event: Option<NextEvent> = None;
     while let Some(row) = rows.next()? {
         let race_id: i64 = row.get(0)?;
-        let year: i64 = row.get(1)?;
-        let round: i64 = row.get(2)?;
-        let circuit_id: i64 = row.get(3)?;
-        let name: String = row.get(4)?;
-        let date: String = row.get(5)?;
-        let time: String = row.get(6)?;
-        let url: String = row.get(7)?;
-        let fp1_date: String = row.get(8)?;
-        let fp1_time: String = row.get(9)?;
-        let fp2_date: String = row.get(10)?;
-        let fp2_time: String = row.get(11)?;
-        let fp3_date: String = row.get(12)?;
-        let fp3_time: String = row.get(13)?;
-        let quai_date: String = row.get(14)?;
-        let quali_time: String = row.get(15)?;
-        let sprint_date: String = row.get(16)?;
-        let sprint_time: String = row.get(17)?;
-        let mut circuits_statement = conn.prepare("SELECT country FROM circuits WHERE circuitId = ?1")?;
-        let country: String = circuits_statement.query_row([circuit_id], |row| row.get(0))?;
-        let country_code: String = get_country_code(country.clone());
+        let round: i64 = row.get(1)?;
+        let circuit_id: i64 = row.get(2)?;
+        let grand_prix_name: String = row.get(3)?;
+        let grand_prix_date: String = row.get(4)?;
+        let grand_prix_time: String = row.get(5)?;
+        let fp1_date: String = row.get(6)?;
+        let fp1_time: String = row.get(7)?;
+        let fp2_date: String = row.get(8)?;
+        let fp2_time: String = row.get(9)?;
+        let fp3_date: String = row.get(10)?;
+        let fp3_time: String = row.get(11)?;
+        let quai_date: String = row.get(12)?;
+        let quali_time: String = row.get(13)?;
+        let sprint_date: String = row.get(14)?;
+        let sprint_time: String = row.get(15)?;
+        let country: String = row.get(16)?;
+        let location: String = row.get(17)?;
+        let country_code: String = get_country_code_country(country.clone());
+        let mut next_event_name: String = String::from("NONE");
+        let mut next_event_time: String = String::from("NONE");
 
-        races =  Some(Races {
+        /*
+        Given all the sub event times, determine which event is either Live or is going to Happen Next
+        Live is anytime that is within the timeframe of 1 hour ago or ahead
+        If No event is live, get the nearest future event
+         */
+        let events: Vec<(String, String)> = vec![
+            (String::from("Free Practice 1"), to_datetime(fp1_date.clone(), fp1_time.clone())),
+            (String::from("Free Practice 2"), to_datetime(fp2_date.clone(), fp2_time.clone())),
+            (String::from("Free Practice 3"), to_datetime(fp3_date.clone(), fp3_time.clone())),
+            (String::from("Free Practice 4"), to_datetime(sprint_date.clone(), sprint_time.clone())),
+            (String::from("Free Practice 5"), to_datetime(quai_date.clone(), quali_time.clone())),
+            (String::from("Free Practice 6"), to_datetime(grand_prix_date.clone(), grand_prix_time.clone())),
+        ];
+
+        let current_datetime = chrono::Local::now().naive_local();
+        for (label, datetime_str) in events{
+            let datetime = parse_datetime(&datetime_str);
+            // See if time is within 2 hours from now
+            let one_hour_ago = current_datetime + Duration::hours(-1);
+            let one_hour_ahead = current_datetime + Duration::hours(1);
+
+            println!("Current Datetime: {:}", current_datetime);
+            println!("{:} {:} {:} {:}",label, datetime, one_hour_ago, one_hour_ahead);
+
+            if datetime >= one_hour_ago && datetime <= one_hour_ahead {
+                next_event_name = label;
+                next_event_time = datetime.time().to_string();
+                break
+            }
+
+            // If not, find the nearest event and time
+            if datetime >= current_datetime{
+                next_event_name = label;
+                next_event_time = datetime.time().to_string();
+                break
+            }
+        }
+
+
+        next_event = Some(NextEvent {
             race_id: race_id,
-            year: year,
             round: round,
             circuit_id: circuit_id,
-            name: name,
-            date: date,
-            time: time,
-            url: url,
+            grand_prix_name: grand_prix_name,
+            grand_prix_date: grand_prix_date,
+            grand_prix_time: grand_prix_time,
             fp1_date: fp1_date,
             fp1_time: fp1_time,
             fp2_date: fp2_date,
             fp2_time: fp2_time,
             fp3_date: fp3_date,
             fp3_time: fp3_time,
-            quai_date: quai_date,
-            quali_time: quali_time,
             sprint_date: sprint_date,
             sprint_time: sprint_time,
+            quai_date: quai_date,
+            quali_time: quali_time,
+            next_event_name: next_event_name,
+            next_event_time: next_event_time,
             country: country,
+            location: location,
             country_code: country_code
         });
     }
-    races.ok_or_else(|| rusqlite::Error::QueryReturnedNoRows)
+    println!("{:?}",next_event);
+    next_event.ok_or_else(|| rusqlite::Error::QueryReturnedNoRows)
 }
 
 /*
@@ -1197,6 +1221,7 @@ pub fn home_page_driver_standings() -> Result<Vec<DriverStanding>, rusqlite::Err
         let forename: String = row.get(4)?;
         let surename: String = row.get(5)?;
         let nationality: String =  row.get(6)?;
+        let country_code: String = get_country_code_nationality(nationality.clone());
 
         let driver: DriverStanding = DriverStanding {
             driver_id: driver_id,
@@ -1205,7 +1230,8 @@ pub fn home_page_driver_standings() -> Result<Vec<DriverStanding>, rusqlite::Err
             wins: wins,
             forename: forename,
             surename: surename,
-            nationality: nationality
+            nationality: nationality,
+            country_code: country_code
         };
         driver_standings.push(driver);
     }
@@ -1240,6 +1266,7 @@ pub fn home_page_constructor_standings() -> Result<Vec<ConstructorStanding>, rus
         let wins: i64 =  row.get(3)?;
         let name: String = row.get(4)?;
         let nationality: String =  row.get(5)?;
+        let country_code: String = get_country_code_nationality(nationality.clone());
 
         let constructor: ConstructorStanding = ConstructorStanding {
             constructor_id: constructor_id,
@@ -1247,7 +1274,8 @@ pub fn home_page_constructor_standings() -> Result<Vec<ConstructorStanding>, rus
             position: position,
             wins: wins,
             name: name,
-            nationality: nationality
+            nationality: nationality,
+            country_code: country_code
         };
         constructor_standings.push(constructor);
     }
