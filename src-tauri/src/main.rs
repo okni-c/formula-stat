@@ -3,6 +3,7 @@
 
 use std::error::Error;
 mod database;
+mod func;
 
 fn main() -> Result<(), Box<dyn Error>> {
   // Comment this out for debugging build
@@ -50,8 +51,8 @@ fn get_circuit(circuit_id: &str) -> database::Circuit {
 
 #[tauri::command]
 // Returns all information for the next race event for the homepage
-fn get_home_page_next_event() -> database::Races {
-  let next_event: database::Races = database::home_page_next_event().expect("ERROR: Unable to get Next Race for Homepage");
+fn get_home_page_next_event() -> database::NextEvent {
+  let next_event: database::NextEvent = database::home_page_next_event().expect("ERROR: Unable to get Next Race for Homepage");
   println!("{:?}",next_event);
   return next_event
 }
