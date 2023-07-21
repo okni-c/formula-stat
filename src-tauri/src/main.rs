@@ -8,6 +8,7 @@ mod func;
 fn main() -> Result<(), Box<dyn Error>> {
   database::create_tables()?;
   database::populate_tables_via_csv()?;
+  database::home_page_next_event()?;
 
   tauri::Builder::default()
       .invoke_handler(tauri::generate_handler![

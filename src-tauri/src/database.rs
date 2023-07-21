@@ -3,7 +3,7 @@ use std::{error::Error, vec};
 use std::fs::File;
 use csv::ReaderBuilder;
 use serde::Serialize;
-use chrono::{DateTime, Local, TimeZone, NaiveDate, NaiveTime, ParseError, Timelike, NaiveDateTime, Duration};
+use chrono::{Duration};
 
 use crate::func::{get_country_code_country, get_country_code_nationality, set_to_null_if_n, to_datetime, parse_datetime};
 
@@ -1129,7 +1129,7 @@ pub fn home_page_next_event() -> Result<NextEvent, rusqlite::Error>{
         Given all the sub event times, determine which event is either Live or is going to Happen Next
         Live is anytime that is within the timeframe of 1 hour ago or ahead
         If No event is live, get the nearest future event
-         */
+        */
         let events: Vec<(String, String)> = vec![
             (String::from("Free Practice 1"), to_datetime(fp1_date.clone(), fp1_time.clone())),
             (String::from("Free Practice 2"), to_datetime(fp2_date.clone(), fp2_time.clone())),
@@ -1151,14 +1151,14 @@ pub fn home_page_next_event() -> Result<NextEvent, rusqlite::Error>{
 
             if datetime >= one_hour_ago && datetime <= one_hour_ahead {
                 next_event_name = label;
-                next_event_time = datetime.time().to_string();
+                next_event_time = datetime.to_string();
                 break
             }
 
             // If not, find the nearest event and time
             if datetime >= current_datetime{
                 next_event_name = label;
-                next_event_time = datetime.time().to_string();
+                next_event_time = datetime.to_string();
                 break
             }
         }
