@@ -2,7 +2,7 @@ interface HeaderTypes {
     round: number,
     circuitName: string,
     trackImg?: string,
-    removeImg?: boolean
+    removeImg?: boolean,
 }
 
 export default function HomePageHeader({round, circuitName, trackImg, removeImg}: HeaderTypes) {

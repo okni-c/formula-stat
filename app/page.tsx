@@ -27,7 +27,7 @@ export default function Home() {
           duration: 0.1,
           delay: 0.1
         }}>
-        <HomePageHeader circuitName={nextEvent.name} round={nextEvent.round} removeImg={false} />
+        <HomePageHeader circuitName={nextEvent.grand_prix_name} round={nextEvent.round} removeImg={false} />
 
         <HomePageRolex nextEvent={nextEvent} />
 
