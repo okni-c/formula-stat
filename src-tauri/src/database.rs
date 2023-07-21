@@ -1163,7 +1163,6 @@ pub fn home_page_next_event() -> Result<NextEvent, rusqlite::Error>{
             }
         }
 
-
         next_event = Some(NextEvent {
             race_id: race_id,
             round: round,
