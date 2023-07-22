@@ -1134,9 +1134,9 @@ pub fn home_page_next_event() -> Result<NextEvent, rusqlite::Error>{
             (String::from("Free Practice 1"), to_datetime(fp1_date.clone(), fp1_time.clone())),
             (String::from("Free Practice 2"), to_datetime(fp2_date.clone(), fp2_time.clone())),
             (String::from("Free Practice 3"), to_datetime(fp3_date.clone(), fp3_time.clone())),
-            (String::from("Free Practice 4"), to_datetime(sprint_date.clone(), sprint_time.clone())),
-            (String::from("Free Practice 5"), to_datetime(quai_date.clone(), quali_time.clone())),
-            (String::from("Free Practice 6"), to_datetime(grand_prix_date.clone(), grand_prix_time.clone())),
+            (String::from("Sprint"), to_datetime(sprint_date.clone(), sprint_time.clone())),
+            (String::from("Qualifying"), to_datetime(quai_date.clone(), quali_time.clone())),
+            (grand_prix_name.clone(), to_datetime(grand_prix_date.clone(), grand_prix_time.clone())),
         ];
 
         let current_datetime = chrono::Local::now().naive_local();
