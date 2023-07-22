@@ -5,7 +5,7 @@ use csv::ReaderBuilder;
 use serde::Serialize;
 use chrono::{Duration};
 
-use crate::func::{get_country_code_country, get_country_code_nationality, set_to_null_if_n, to_datetime, parse_datetime};
+use crate::func::{get_country_code_country, get_country_code_nationality, set_to_null_if_n, to_datetime, parse_datetime, to_utc};
 
 
 #[derive(Debug)]
@@ -1110,15 +1110,20 @@ pub fn home_page_next_event() -> Result<NextEvent, rusqlite::Error>{
         let grand_prix_date: String = row.get(4)?;
         let grand_prix_time: String = row.get(5)?;
         let fp1_date: String = row.get(6)?;
-        let fp1_time: String = row.get(7)?;
+        let mut fp1_time: String = row.get(7)?;
+        fp1_time = to_utc(fp1_time.as_str());
         let fp2_date: String = row.get(8)?;
-        let fp2_time: String = row.get(9)?;
+        let mut fp2_time: String = row.get(9)?;
+        fp2_time = to_utc(fp2_time.as_str());
         let fp3_date: String = row.get(10)?;
-        let fp3_time: String = row.get(11)?;
+        let mut fp3_time: String = row.get(11)?;
+        fp3_time = to_utc(fp3_time.as_str());
         let quai_date: String = row.get(12)?;
-        let quali_time: String = row.get(13)?;
+        let mut quali_time: String = row.get(13)?;
+        quali_time = to_utc(quali_time.as_str());
         let sprint_date: String = row.get(14)?;
-        let sprint_time: String = row.get(15)?;
+        let mut sprint_time: String = row.get(15)?;
+        sprint_time = to_utc(sprint_time.as_str());
         let country: String = row.get(16)?;
         let location: String = row.get(17)?;
         let country_code: String = get_country_code_country(country.clone());

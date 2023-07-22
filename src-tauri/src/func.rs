@@ -149,3 +149,13 @@ pub fn parse_datetime(datetime_str: &str) -> NaiveDateTime {
     }
     return NaiveDateTime::parse_from_str(datetime_str, "%Y-%m-%d %H:%M:%S").expect("ERROR: Unable to Parse Datetime from String")
 }
+
+pub fn to_utc(time_str: &str) -> String {
+    println!("{:?}",time_str);
+    if time_str == "\\N"{
+        return String::from("None")
+    }
+    let mut time: NaiveTime = NaiveTime::parse_from_str(time_str, "%H:%M:%S").unwrap();
+    time = time + chrono::Duration::hours(1);
+    return time.to_string()
+}
