@@ -217,6 +217,18 @@
   resolved "https://registry.npmjs.org/@types/json5/-/json5-0.0.29.tgz"
   integrity sha512-dRLjCWHYg4oaA77cxO64oO+7JwCwnIzkZPdrrC71jQmQtlhM556pwKo5bUzqvZndkVbeFLIIi+9TC40JNF5hNQ==
 
+"@types/lodash.memoize@^4.1.7":
+  version "4.1.7"
+  resolved "https://registry.npmjs.org/@types/lodash.memoize/-/lodash.memoize-4.1.7.tgz"
+  integrity sha512-lGN7WeO4vO6sICVpf041Q7BX/9k1Y24Zo3FY0aUezr1QlKznpjzsDk3T3wvH8ofYzoK0QupN9TWcFAFZlyPwQQ==
+  dependencies:
+    "@types/lodash" "*"
+
+"@types/lodash@*":
+  version "4.14.195"
+  resolved "https://registry.npmjs.org/@types/lodash/-/lodash-4.14.195.tgz"
+  integrity sha512-Hwx9EUgdwf2GLarOjQp5ZH8ZmblzcbTBC2wtQWNKARBSxM9ezRIAUpeDTgoQRAFB0+8CNWXVA9+MaSOzOF3nPg==
+
 "@types/node@20.4.2":
   version "20.4.2"
   resolved "https://registry.npmjs.org/@types/node/-/node-20.4.2.tgz"
@@ -298,6 +310,11 @@
   dependencies:
     "@typescript-eslint/types" "5.62.0"
     eslint-visitor-keys "^3.3.0"
+
+"@wojtekmaj/date-utils@^1.1.2":
+  version "1.4.1"
+  resolved "https://registry.npmjs.org/@wojtekmaj/date-utils/-/date-utils-1.4.1.tgz"
+  integrity sha512-Fjs0KJz0//0AmlJVFx9AQmWpmxOTw4foDo4DKoswWVVjHsna4rdu+fXwid5YHNgzv/wHi9AkZCRPmHWsf890lg==
 
 acorn-jsx@^5.3.2:
   version "5.3.2"
@@ -567,6 +584,11 @@ client-only@0.0.1:
   resolved "https://registry.npmjs.org/client-only/-/client-only-0.0.1.tgz"
   integrity sha512-IV3Ou0jSMzZrd3pZ48nLkT9DA7Ag1pnPzaiQhpW7c3RbcqqzvzzVu+L8gfqMp/8IM2MQtSiqaCxrrcfu8I8rMA==
 
+clsx@^2.0.0:
+  version "2.0.0"
+  resolved "https://registry.npmjs.org/clsx/-/clsx-2.0.0.tgz"
+  integrity sha512-rQ1+kcj+ttHG0MKVGBUXwayCCF1oh39BF5COIpRzuCEv8Mwjv0XucrI2ExNTOn9IlLifGClWQcU9BrZORvtw6Q==
+
 color-convert@^2.0.1:
   version "2.0.1"
   resolved "https://registry.npmjs.org/color-convert/-/color-convert-2.0.1.tgz"
@@ -755,6 +777,11 @@ domhandler@^4.2.0, domhandler@^4.3.1:
   integrity sha512-GrwoxYN+uWlzO8uhUXRl0P+kHE4GtVPfYzVLcUxPL7KNdHKj66vvlhiweIHqYYXWlw+T8iLMp42Lm67ghw4WMQ==
   dependencies:
     domelementtype "^2.2.0"
+
+dommatrix@^1.0.3:
+  version "1.0.3"
+  resolved "https://registry.npmjs.org/dommatrix/-/dommatrix-1.0.3.tgz"
+  integrity sha512-l32Xp/TLgWb8ReqbVJAFIvXmY7go4nTxxlWiAFyhoQw9RKEOHBZNnyGvJWqDVSPmq3Y9HlM4npqF/T6VMOXhww==
 
 domutils@^2.8.0:
   version "2.8.0"
@@ -1246,6 +1273,14 @@ get-tsconfig@^4.5.0:
   dependencies:
     resolve-pkg-maps "^1.0.0"
 
+get-user-locale@^2.2.1:
+  version "2.3.0"
+  resolved "https://registry.npmjs.org/get-user-locale/-/get-user-locale-2.3.0.tgz"
+  integrity sha512-I3rQvAUwu2nauRD9YyQBSXVFJZixNouwA+eZld51Sn4Pn0N1qFbgcgOi/nPigJPQlNY519mT95fiSPRgflQiTA==
+  dependencies:
+    "@types/lodash.memoize" "^4.1.7"
+    lodash.memoize "^4.1.1"
+
 glob-parent@^5.1.2:
   version "5.1.2"
   resolved "https://registry.npmjs.org/glob-parent/-/glob-parent-5.1.2.tgz"
@@ -1400,6 +1435,11 @@ human-signals@^4.3.0:
   version "4.3.1"
   resolved "https://registry.npmjs.org/human-signals/-/human-signals-4.3.1.tgz"
   integrity sha512-nZXjEF2nbo7lIw3mgYjItAfgQXog3OjJogSbKa2CQIIvSGWcKgeJnQlNXip6NglNzYH45nSRiEVimMvYL8DDqQ==
+
+humps@^2.0.1:
+  version "2.0.1"
+  resolved "https://registry.npmjs.org/humps/-/humps-2.0.1.tgz"
+  integrity sha512-E0eIbrFWUhwfXJmsbdjRQFQPrl5pTEoKlz163j1mTqqUnU9PgR4AgB8AIITzuB3vLBdxZXyZ9TDIrwB2OASz4g==
 
 ignore@^5.2.0, ignore@^5.2.4:
   version "5.2.4"
@@ -1691,6 +1731,11 @@ locate-path@^6.0.0:
   integrity sha512-iPZK6eYjbxRu3uB4/WZ3EsEIMJFMqAoopl3R+zuq0UjcAm/MO6KCweDgPfP3elTztoKP3KtnVHxTn2NHBSDVUw==
   dependencies:
     p-locate "^5.0.0"
+
+lodash.memoize@^4.1.1:
+  version "4.1.2"
+  resolved "https://registry.npmjs.org/lodash.memoize/-/lodash.memoize-4.1.2.tgz"
+  integrity sha512-t7j+NzmgnQzTAYXcsHYLgimltOV1MXHtlOWf6GjL9Kj8GK5FInw5JotxvbOs+IvV1/Dzo04/fCGfLVs7aXb4Ag==
 
 lodash.merge@^4.6.2:
   version "4.6.2"
@@ -2086,7 +2131,7 @@ prelude-ls@^1.2.1:
   resolved "https://registry.npmjs.org/prelude-ls/-/prelude-ls-1.2.1.tgz"
   integrity sha512-vkcDPrRZo1QZLbn5RLGPpg/WmIQ65qoWWhcGKf/b5eplkkarX0m9z8ppCat4mlOqUsWpyNuYgO3VRyrYHSzX5g==
 
-prop-types@^15.8.1:
+prop-types@^15.0.0, prop-types@^15.6.0, prop-types@^15.7.2, prop-types@^15.8.1:
   version "15.8.1"
   resolved "https://registry.npmjs.org/prop-types/-/prop-types-15.8.1.tgz"
   integrity sha512-oj87CgZICdulUohogVAR7AjlC0327U4el4L6eAvOqCeudMDVU0NThNaV+b9Df4dXgSP1gXMTnPdhfe/2qDH5cg==
@@ -2105,7 +2150,32 @@ queue-microtask@^1.2.2:
   resolved "https://registry.npmjs.org/queue-microtask/-/queue-microtask-1.2.3.tgz"
   integrity sha512-NuaNSa6flKT5JaSYQzJok04JzTL1CA6aGhv5rfLW3PgqA+M2ChpZQnAC8h8i4ZFkBS8X5RqkDBHA7r4hej3K9A==
 
-react-dom@^18.0.0, react-dom@^18.2.0, react-dom@18.2.0:
+react-clock@^4.3.0:
+  version "4.3.0"
+  resolved "https://registry.npmjs.org/react-clock/-/react-clock-4.3.0.tgz"
+  integrity sha512-ihrH4orfh8cieOnOWXVdV9ROgDJw9feWZF9+MULnwHU8YpvIXDBikLXFYLG4qUCGPOvKakQJi9RrQiIdl2FSUw==
+  dependencies:
+    "@types/react" "*"
+    "@wojtekmaj/date-utils" "^1.1.2"
+    clsx "^2.0.0"
+    get-user-locale "^2.2.1"
+    prop-types "^15.6.0"
+
+react-countdown@^2.3.5:
+  version "2.3.5"
+  resolved "https://registry.npmjs.org/react-countdown/-/react-countdown-2.3.5.tgz"
+  integrity sha512-K26ENYEesMfPxhRRtm1r+Pf70SErrvW3g4CArLi/x6MPFjgfDFYePT4UghEj8p2nI0cqVV7/JjDgjyr//U60Og==
+  dependencies:
+    prop-types "^15.7.2"
+
+react-curved-text@^2.0.2:
+  version "2.0.2"
+  resolved "https://registry.npmjs.org/react-curved-text/-/react-curved-text-2.0.2.tgz"
+  integrity sha512-wEHJ8NgfgS6dIWfuFcx8v+en0Ohnd9OuIxzrmpRhltts7H7FWbDuiGEkPYLjJN2AvCI7hv+txCT4PwRuERrFkg==
+  dependencies:
+    svg-path-commander "1.0.5"
+
+"react-dom@^16.0.0 || ^17.0.0 || ^18.0.0", "react-dom@^16.8.0 || ^17.0.0 || ^18.0.0", react-dom@^18.0.0, react-dom@^18.2.0, "react-dom@>= 15", react-dom@>=18.0.0, react-dom@18.2.0:
   version "18.2.0"
   resolved "https://registry.npmjs.org/react-dom/-/react-dom-18.2.0.tgz"
   integrity sha512-6IMTriUmvsjHUjNtEDudZfuDQUoWXVxKHhlEGSk81n4YFS+r/Kl99wXiwlVXtPBtJenozv2P+hxDsw9eA7Xo6g==
@@ -2118,6 +2188,13 @@ react-is@^16.13.1:
   resolved "https://registry.npmjs.org/react-is/-/react-is-16.13.1.tgz"
   integrity sha512-24e6ynE2H+OKt4kqsOvNd8kBpV65zoxbA4BVsEOB3ARVWQki/DHzaUoC5KuON/BiccDaCCTZBuOcfZs70kR8bQ==
 
+react-shadow@^20.3.0:
+  version "20.3.0"
+  resolved "https://registry.npmjs.org/react-shadow/-/react-shadow-20.3.0.tgz"
+  integrity sha512-oWi4W+FE6Puz+7+psL5l90wD9tu+OI1x+Uf1C2Y+O9J1AZzfaWVBbAQjvrDk/Sn8Nh0owCGSD0eemcr1ErtGzw==
+  dependencies:
+    humps "^2.0.1"
+
 react-world-flags@^1.5.1:
   version "1.5.1"
   resolved "https://registry.npmjs.org/react-world-flags/-/react-world-flags-1.5.1.tgz"
@@ -2127,7 +2204,7 @@ react-world-flags@^1.5.1:
     svgo "^2.8.0"
     world-countries "^4.0.0"
 
-react@^18.0.0, react@^18.2.0, "react@>= 16.8.0 || 17.x.x || ^18.0.0-0", react@>=0.14, react@18.2.0:
+"react@^16.8.0 || ^17.0.0 || ^18.0.0", react@^18.0.0, react@^18.2.0, "react@>= 15", "react@>= 16.8.0 || 17.x.x || ^18.0.0-0", react@>=0.14, react@>=18.0.0, react@18.2.0:
   version "18.2.0"
   resolved "https://registry.npmjs.org/react/-/react-18.2.0.tgz"
   integrity sha512-/3IjMdb2L9QbBdWiW5e3P2/npwMBaU9mHCSCUzNln0ZCYbcfTsGbTJrU/kGemdH2IWmB2ioZ+zkxtmq6g09fGQ==
@@ -2404,6 +2481,13 @@ svg-country-flags@^1.2.10:
   version "1.2.10"
   resolved "https://registry.npmjs.org/svg-country-flags/-/svg-country-flags-1.2.10.tgz"
   integrity sha512-xrqwo0TYf/h2cfPvGpjdSuSguUbri4vNNizBnwzoZnX0xGo3O5nGJMlbYEp7NOYcnPGBm6LE2axqDWSB847bLw==
+
+svg-path-commander@1.0.5:
+  version "1.0.5"
+  resolved "https://registry.npmjs.org/svg-path-commander/-/svg-path-commander-1.0.5.tgz"
+  integrity sha512-hhQfARVXoPrwwe4DNPWM4hjQLK7rTxwQ+TUc5mxoe5g0k5eStc4SPnKqmivlm/dzZ98bI+yDyKye92n2t+oOiQ==
+  dependencies:
+    dommatrix "^1.0.3"
 
 svgo@^2.8.0:
   version "2.8.0"
