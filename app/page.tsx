@@ -1,10 +1,9 @@
 'use client'
 
-import { AnimatePresence, motion } from 'framer-motion'
 import HomePageHeader from './components/HomePageHeader'
 import { useEffect, useState } from 'react';
 import { invoke } from '@tauri-apps/api/tauri';
-import HomePageRolex from './components/HomePageRolex';
+import NextEventBlock from './components/NextEventBlock';
 
 export default function Home() {
   const [nextEvent, setNextEvent] = useState<any>({});
@@ -18,20 +17,9 @@ export default function Home() {
   }, []);
 
   return (
-    <AnimatePresence>
-      <motion.main className="min-h-screen max-w-5xl w-full mx-auto px-10 overflow-hidden justify-center"
-        initial={{ opacity: 0 }}
-        animate={{ opacity: 1 }}
-        exit={{ opacity: 0 }}
-        transition={{
-          duration: 0.1,
-          delay: 0.1
-        }}>
+      <main className="min-h-screen max-w-5xl w-full mx-auto px-10 overflow-hidden justify-center">
         <HomePageHeader circuitName={nextEvent.grand_prix_name} round={nextEvent.round} removeImg={false} />
-
-        <HomePageRolex nextEvent={nextEvent} />
-
-      </motion.main>
-    </AnimatePresence>
+        <NextEventBlock nextEvent={nextEvent} />
+      </main>
   )
 }

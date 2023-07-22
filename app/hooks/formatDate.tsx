@@ -6,3 +6,4 @@ export default function formatDate(dateString: string, timeString: string): stri
     const options: any = { month: 'long', day: 'numeric', year: 'numeric' };
     return dateObject.toLocaleDateString(undefined, options);
 }
+
