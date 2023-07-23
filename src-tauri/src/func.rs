@@ -117,7 +117,6 @@ pub fn set_to_null_if_n(temp: String) -> String {
 }
 
 pub fn to_datetime(date_str: String, time_str: String) -> String {
-    println!("{:} {:}", date_str, time_str);
     if date_str == "\\N" {
         return String::from("None")
     }
@@ -151,7 +150,6 @@ pub fn parse_datetime(datetime_str: &str) -> NaiveDateTime {
 }
 
 pub fn to_utc(time_str: &str) -> String {
-    println!("{:?}",time_str);
     if time_str == "\\N"{
         return String::from("None")
     }

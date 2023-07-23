@@ -1108,7 +1108,8 @@ pub fn home_page_next_event() -> Result<NextEvent, rusqlite::Error>{
         let circuit_id: i64 = row.get(2)?;
         let grand_prix_name: String = row.get(3)?;
         let grand_prix_date: String = row.get(4)?;
-        let grand_prix_time: String = row.get(5)?;
+        let mut grand_prix_time: String = row.get(5)?;
+        grand_prix_time = to_utc(grand_prix_time.as_str());
         let fp1_date: String = row.get(6)?;
         let mut fp1_time: String = row.get(7)?;
         fp1_time = to_utc(fp1_time.as_str());
@@ -1130,8 +1131,6 @@ pub fn home_page_next_event() -> Result<NextEvent, rusqlite::Error>{
         let mut next_event_name: String = String::from("NONE");
         let mut next_event_time: String = String::from("NONE");
 
-        println!("{:?}, {:?}",quali_time, sprint_time);
-
         /*
         Given all the sub event times, determine which event is either Live or is going to Happen Next
         Live is anytime that is within the timeframe of 1 hour ago or ahead
@@ -1152,9 +1151,6 @@ pub fn home_page_next_event() -> Result<NextEvent, rusqlite::Error>{
             // See if time is within 2 hours from now
             let one_hour_ago = current_datetime + Duration::hours(-1);
             let one_hour_ahead = current_datetime + Duration::hours(1);
-
-            println!("Current Datetime: {:}", current_datetime);
-            println!("{:} {:} {:} {:}",label, datetime, one_hour_ago, one_hour_ahead);
 
             if datetime >= one_hour_ago && datetime <= one_hour_ahead {
                 next_event_name = label;
