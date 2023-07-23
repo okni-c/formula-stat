@@ -27,7 +27,7 @@ export default function NextEventDropDownBlock({ circuitName, date, time }: Next
         setSTime(formattedTime);
         setSDate(formattedDate);
         setSDay(formattedDay);
-
+        console.log('Format tester: ' + date + time);
     }, [date, time])
 
     return (
