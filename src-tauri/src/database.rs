@@ -1073,7 +1073,7 @@ pub struct NextEvent {
     fp3_time: String,
     sprint_date: String,
     sprint_time: String,
-    quai_date: String,
+    quali_date: String,
     quali_time: String,
     next_event_name: String,
     next_event_time: String,
@@ -1108,7 +1108,8 @@ pub fn home_page_next_event() -> Result<NextEvent, rusqlite::Error>{
         let circuit_id: i64 = row.get(2)?;
         let grand_prix_name: String = row.get(3)?;
         let grand_prix_date: String = row.get(4)?;
-        let grand_prix_time: String = row.get(5)?;
+        let mut grand_prix_time: String = row.get(5)?;
+        grand_prix_time = to_utc(grand_prix_time.as_str());
         let fp1_date: String = row.get(6)?;
         let mut fp1_time: String = row.get(7)?;
         fp1_time = to_utc(fp1_time.as_str());
@@ -1118,12 +1119,12 @@ pub fn home_page_next_event() -> Result<NextEvent, rusqlite::Error>{
         let fp3_date: String = row.get(10)?;
         let mut fp3_time: String = row.get(11)?;
         fp3_time = to_utc(fp3_time.as_str());
-        let quai_date: String = row.get(12)?;
-        let mut quali_time: String = row.get(13)?;
-        quali_time = to_utc(quali_time.as_str());
-        let sprint_date: String = row.get(14)?;
-        let mut sprint_time: String = row.get(15)?;
+        let sprint_date: String = row.get(12)?;
+        let mut sprint_time: String = row.get(13)?;
         sprint_time = to_utc(sprint_time.as_str());
+        let quali_date: String = row.get(14)?;
+        let mut quali_time: String = row.get(15)?;
+        quali_time = to_utc(quali_time.as_str());
         let country: String = row.get(16)?;
         let location: String = row.get(17)?;
         let country_code: String = get_country_code_country(country.clone());
@@ -1140,7 +1141,7 @@ pub fn home_page_next_event() -> Result<NextEvent, rusqlite::Error>{
             (String::from("Free Practice 2"), to_datetime(fp2_date.clone(), fp2_time.clone())),
             (String::from("Free Practice 3"), to_datetime(fp3_date.clone(), fp3_time.clone())),
             (String::from("Sprint"), to_datetime(sprint_date.clone(), sprint_time.clone())),
-            (String::from("Qualifying"), to_datetime(quai_date.clone(), quali_time.clone())),
+            (String::from("Qualifying"), to_datetime(quali_date.clone(), quali_time.clone())),
             (grand_prix_name.clone(), to_datetime(grand_prix_date.clone(), grand_prix_time.clone())),
         ];
 
@@ -1150,9 +1151,6 @@ pub fn home_page_next_event() -> Result<NextEvent, rusqlite::Error>{
             // See if time is within 2 hours from now
             let one_hour_ago = current_datetime + Duration::hours(-1);
             let one_hour_ahead = current_datetime + Duration::hours(1);
-
-            println!("Current Datetime: {:}", current_datetime);
-            println!("{:} {:} {:} {:}",label, datetime, one_hour_ago, one_hour_ahead);
 
             if datetime >= one_hour_ago && datetime <= one_hour_ahead {
                 next_event_name = label;
@@ -1183,7 +1181,7 @@ pub fn home_page_next_event() -> Result<NextEvent, rusqlite::Error>{
             fp3_time: fp3_time,
             sprint_date: sprint_date,
             sprint_time: sprint_time,
-            quai_date: quai_date,
+            quali_date: quali_date,
             quali_time: quali_time,
             next_event_name: next_event_name,
             next_event_time: next_event_time,
@@ -1239,6 +1237,7 @@ pub fn home_page_driver_standings() -> Result<Vec<DriverStanding>, rusqlite::Err
         };
         driver_standings.push(driver);
     }
+    println!("{:?}",driver_standings);
     Ok(driver_standings)
 }
 
@@ -1283,5 +1282,6 @@ pub fn home_page_constructor_standings() -> Result<Vec<ConstructorStanding>, rus
         };
         constructor_standings.push(constructor);
     }
+    println!("{:?}",constructor_standings);
     Ok(constructor_standings)
 }
