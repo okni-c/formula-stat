@@ -1237,6 +1237,7 @@ pub fn home_page_driver_standings() -> Result<Vec<DriverStanding>, rusqlite::Err
         };
         driver_standings.push(driver);
     }
+    println!("{:?}",driver_standings);
     Ok(driver_standings)
 }
 
@@ -1281,5 +1282,6 @@ pub fn home_page_constructor_standings() -> Result<Vec<ConstructorStanding>, rus
         };
         constructor_standings.push(constructor);
     }
+    println!("{:?}",constructor_standings);
     Ok(constructor_standings)
 }
