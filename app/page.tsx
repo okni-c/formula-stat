@@ -1,28 +1,36 @@
 'use client'
 
-import HomePageHeader from './components/HomePageHeader'
-import { useEffect, useState } from 'react';
-import { invoke } from '@tauri-apps/api/tauri';
+import HomePageHeader from './components/HomePageHeader';
+import { useQuery } from '@tanstack/react-query'
 import NextEventBlock from './components/NextEventBlock';
 import StandingsContainer from './components/StandingsContainer';
+import { fetchNextEvent } from './fetchers/fetchNextEvent';
+import DriverList from './components/DriverList';
+import ConstructorList from './components/ConstructorList';
 
 export default function Home() {
-  const [nextEvent, setNextEvent] = useState<any>({});
 
-  useEffect(() => {
-    invoke<any>('get_home_page_next_event')
-      .then((response) => {
-        setNextEvent(response);
-      })
-      .catch(console.error);
-  }, []);
+  const { data: nextEvent, isLoading, isError } = useQuery<any>({ queryKey: ['nextEvent'], queryFn: fetchNextEvent });
+
+  if (isLoading) {
+    return <div>Loading...</div>;
+  }
+
+  if (isError) {
+    return <div>Error occurred while fetching data.</div>;
+  }
 
   return (
       <main className="min-h-screen max-w-5xl w-full mx-auto px-10 overflow-hidden justify-center">
         <HomePageHeader circuitName={nextEvent.grand_prix_name} round={nextEvent.round} removeImg={false} />
         <NextEventBlock nextEvent={nextEvent} />
-        <StandingsContainer functionName={'get_home_page_driver_standings'} title={'Driver Standings'} />
-        <StandingsContainer functionName={'get_home_page_constructor_standings'} title={'Constructor Standings'} />
+        <StandingsContainer title={'Driver Standings'}>
+          <DriverList />
+        </StandingsContainer>
+        <StandingsContainer title={'Constructor Standings'}>
+          <ConstructorList />
+        </StandingsContainer>
       </main>
-  )
+  );
 }
+

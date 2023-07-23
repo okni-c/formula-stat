@@ -1,8 +1,7 @@
 'use client'
 
-// import { AnimatePresence, motion } from 'framer-motion'
-import { useEffect, useState } from 'react'
-import { invoke } from '@tauri-apps/api/tauri'
+import { useQuery } from '@tanstack/react-query';
+import { fetchRaces } from '@/app/fetchers/fetchRaces';
 import RacePageHeader from '../components/RacePageHeader'
 import ListBlock from '../components/ListBlock'
 import RaceBlock from '../components/RaceBlock'
@@ -16,14 +15,16 @@ interface YearlyRaceDataTypes {
 }
 
 export default function RacePage() {
-  const [race, setRace] = useState([]);
-  useEffect(() => {
-    invoke<any>('get_races', { year: '2023' })
-      .then((response) => {
-        setRace(response);
-      })
-      .catch(console.error);
-  }, []);
+  const { data: race, isLoading, isError } = useQuery<any>({ queryKey: ['race', '2023'], queryFn: () => fetchRaces('2023') });
+
+  if (isLoading) {
+    return <div>Loading...</div>;
+  }
+
+  if (isError) {
+    return <div>Error occurred while fetching data.</div>;
+  }
+
   return (
     <main className="min-h-screen max-w-5xl w-full mx-auto px-10 overflow-hidden justify-center">
       <RacePageHeader heading={'2023 Archive'} removeImg="true" />
