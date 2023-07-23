@@ -3,6 +3,8 @@
 import Countdown, { zeroPad } from 'react-countdown';
 import RolexClock from './RolexClock/RolexClock';
 import formatDateTime from '../hooks/formateDateTime';
+import { useState } from 'react';
+import NextEventDropDown from './NextEventDropDown';
 
 interface EventTypes {
     nextEvent: {
@@ -25,6 +27,7 @@ interface EventTypes {
 }
 
 export default function NextEventBlock({ nextEvent }: EventTypes) {
+    const [open, setOpen] = useState<Boolean>(false);
     const Counter = () => <span className="ml-auto text-3xl bg-clip-text bg-gradient-to-b text-transparent from-red-400 to-red-800 font-black">Live</span>;
 
     // Renderer callback with condition
@@ -39,10 +42,12 @@ export default function NextEventBlock({ nextEvent }: EventTypes) {
     const timeLeft = new Date(nextEvent.next_event_time).getTime() - Date.now();
 
     const CountDownTimer = () => <Countdown date={Date.now() + timeLeft} renderer={renderer} />;
-    
+
     return (
-            <section className="flex justify-between mt-14 mb-14">
-                <div className="flex bg-opacity-80 bg-neutral-900 solid-opacity-80 rounded-lg p-3 w-full items-center gap-4">
+        <section className="flex flex-col mt-14 mb-14">
+            {/* Original Box */}
+            <div className="bg-opacity-80 bg-neutral-900 solid-opacity-70 rounded-lg p-3 w-full cursor-pointer hover:bg-opacity-100 duration-200 ease-in-out" onClick={() => { open ? setOpen(false) : setOpen(true) }}>
+                <div className='flex w-full items-center gap-4'>
                     <RolexClock />
                     <div>
                         <p className="text-3xl bg-clip-text bg-gradient-to-b text-transparent from-white to-neutral-400 font-regular">{nextEvent.next_event_name}</p>
@@ -50,6 +55,9 @@ export default function NextEventBlock({ nextEvent }: EventTypes) {
                     </div>
                     <CountDownTimer />
                 </div>
-            </section>
+                {/* Toggled Box on click */}
+                {open ? <NextEventDropDown title='Sub Events' nextEvent={nextEvent} /> : null}
+            </div>
+        </section>
     );
 }
