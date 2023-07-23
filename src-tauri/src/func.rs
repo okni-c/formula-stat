@@ -50,6 +50,7 @@ pub fn get_country_code_country(country:String) -> String {
     country_dict.insert("Zimbabwe", "716");
     country_dict.insert("Venezuela", "862");
     country_dict.insert("Uruguay", "858");
+    country_dict.insert("Thailand", "764");
 
     let code: String = country_dict.get(country.as_str()).unwrap_or(&"ERROR: Code not found").to_string();
 
@@ -101,6 +102,7 @@ pub fn get_country_code_nationality(country:String) -> String {
     country_dict.insert("Zimbabwean", "716");
     country_dict.insert("Venezuelan", "862");
     country_dict.insert("Uruguayan", "858");
+    country_dict.insert("Thai", "764");
 
     let code: String = country_dict.get(country.as_str()).unwrap_or(&"ERROR: Code not found").to_string();
 
