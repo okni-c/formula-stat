@@ -31,11 +31,11 @@ export default function NextEventBlock({ nextEvent }: EventTypes) {
     const Counter = () => <span className="ml-auto text-3xl bg-clip-text bg-gradient-to-b text-transparent from-red-400 to-red-800 font-black">Live</span>;
 
     // Renderer callback with condition
-    const renderer = ({ hours, minutes, seconds, completed }: any) => {
+    const renderer = ({ days, hours, minutes, seconds, completed }: any) => {
         if (completed) {
             return <Counter />;
         } else {
-            return <span className="ml-auto text-3xl bg-clip-text bg-gradient-to-b text-transparent from-black dark:from-white dark:to-neutral-500 to-neutral-600 font-black">{zeroPad(hours)}:{zeroPad(minutes)}:{zeroPad(seconds)}</span>;
+            return <span className="ml-auto text-3xl bg-clip-text bg-gradient-to-b text-transparent from-black dark:from-white dark:to-neutral-300 to-neutral-600 font-black">{days}:{zeroPad(hours)}:{zeroPad(minutes)}:{zeroPad(seconds)}</span>;
         }
     };
 
@@ -50,7 +50,7 @@ export default function NextEventBlock({ nextEvent }: EventTypes) {
                 <div className='flex w-full items-center gap-4'>
                     <RolexClock />
                     <div>
-                        <p className="text-3xl bg-clip-text bg-gradient-to-b text-transparent from-black dark:from-white dark:to-neutral-500 to-neutral-600 font-regular">{nextEvent.next_event_name}</p>
+                        <p className="text-3xl bg-clip-text bg-gradient-to-b text-transparent from-black dark:from-white dark:to-neutral-300 to-neutral-600 font-regular">{nextEvent.next_event_name}</p>
                         <p className="text-lg bg-clip-text bg-gradient-to-b text-transparent from-black dark:from-white dark:to-neutral-500 to-neutral-600 font-regular">{formatDateTime(nextEvent.next_event_time)}</p>
                     </div>
                     <CountDownTimer />

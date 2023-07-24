@@ -27,7 +27,7 @@ export default function ConstructorList() {
     const ConstructorLoop = () =>
         data &&
         data
-            .slice(0, 5) // Limit to the first 5 elements
+            .slice(0, 10) // Limit to the first 5 elements
             .map((data: ConstructorTypes) => (
                 <ConstructorBlock
                     key={data.constructor_id}
