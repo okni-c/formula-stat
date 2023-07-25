@@ -5,6 +5,9 @@ import { useQuery } from '@tanstack/react-query'
 import NextEventBlock from './components/NextEventBlock';
 import { AnimatePresence, motion } from 'framer-motion';
 import { fetchNextEvent } from './fetchers/fetchNextEvent';
+import StandingsContainer from './components/StandingsContainer';
+import DriverList from './components/DriverList';
+import ConstructorList from './components/ConstructorList';
 
 export default function Home() {
 
@@ -19,16 +22,22 @@ export default function Home() {
   }
 
   return (
-      <main className="min-h-screen max-w-5xl w-full mx-auto px-10 overflow-hidden justify-center">
-        <AnimatePresence>
-          <motion.div initial={{ x: -100 }}
-                    animate={{ x: 0 }}
-                    exit={{ x: -100 }}>
-            <HomePageHeader circuitName={nextEvent.grand_prix_name} round={nextEvent.round} removeImg={false} />
-            <NextEventBlock nextEvent={nextEvent} />
-          </motion.div>
-        </AnimatePresence>
-      </main>
+    <main className="min-h-screen max-w-5xl w-full mx-auto px-10 overflow-hidden justify-center">
+      <AnimatePresence>
+        <motion.div initial={{ x: -100 }}
+          animate={{ x: 0 }}
+          exit={{ x: -100 }}>
+          <HomePageHeader circuitName={nextEvent.grand_prix_name} round={nextEvent.round} removeImg={false} />
+          <NextEventBlock nextEvent={nextEvent} />
+          <StandingsContainer title={'Driver Standings'}>
+            <DriverList />
+          </StandingsContainer>
+          <StandingsContainer title={'Constructor Standings'}>
+            <ConstructorList />
+          </StandingsContainer>
+        </motion.div>
+      </AnimatePresence>
+    </main>
   );
 }
 
