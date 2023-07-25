@@ -27,7 +27,7 @@ fn greet(name: &str) -> String {
 }
 
 #[tauri::command]
-fn get_races(year: &str) -> Vec<database::Races> {
+async fn get_races(year: String) -> Vec<database::Races> {
   let races: Vec<database::Races> = database::get_races(year.to_string()).expect("ERROR: Unable to get races");
   println!("{:?}",races);
   return races
@@ -35,7 +35,7 @@ fn get_races(year: &str) -> Vec<database::Races> {
 
 #[tauri::command]
 // Given a driver_id, returns a object of driver information
-fn get_driver(driver_id: &str) -> database::Driver {
+async fn get_driver(driver_id: String) -> database::Driver {
   let driver: database::Driver = database::get_driver(driver_id.to_string()).expect("ERROR: Unable to get driver");
   println!("{:?}",driver);
   return driver
@@ -43,7 +43,7 @@ fn get_driver(driver_id: &str) -> database::Driver {
 
 #[tauri::command]
 // Given a circuit_id, returns a object of circuit information
-fn get_circuit(circuit_id: &str) -> database::Circuit {
+async fn get_circuit(circuit_id: String) -> database::Circuit {
   let driver: database::Circuit = database::get_circuit(circuit_id.to_string()).expect("ERROR: Unable to get circuit");
   println!("{:?}",driver);
   return driver
@@ -51,7 +51,7 @@ fn get_circuit(circuit_id: &str) -> database::Circuit {
 
 #[tauri::command]
 // Returns all information for the next race event for the homepage
-fn get_home_page_next_event() -> database::NextEvent {
+async fn get_home_page_next_event() -> database::NextEvent {
   let next_event: database::NextEvent = database::home_page_next_event().expect("ERROR: Unable to get Next Race for Homepage");
   println!("{:?}",next_event);
   return next_event
@@ -59,7 +59,7 @@ fn get_home_page_next_event() -> database::NextEvent {
 
 #[tauri::command]
 // Returns a Vector of Driver Standing Objects Ascending based on position for the homepage
-fn get_home_page_driver_standings() -> Vec<database::DriverStanding> {
+async fn get_home_page_driver_standings() -> Vec<database::DriverStanding> {
   let driver_standings: Vec<database::DriverStanding> = database::home_page_driver_standings().expect("ERROR: Unable to get circuit");
   println!("{:?}",driver_standings);
   return driver_standings
@@ -67,7 +67,7 @@ fn get_home_page_driver_standings() -> Vec<database::DriverStanding> {
 
 #[tauri::command]
 // Returns a Vector of Constructor Standing Objects Ascending based on position for the homepage
-fn get_home_page_constructor_standings() -> Vec<database::ConstructorStanding> {
+async fn get_home_page_constructor_standings() -> Vec<database::ConstructorStanding> {
   let constructor_standings: Vec<database::ConstructorStanding> = database::home_page_constructor_standings().expect("ERROR: Unable to get circuit");
   println!("{:?}",constructor_standings);
   return constructor_standings

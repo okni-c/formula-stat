@@ -35,7 +35,7 @@ export default function RacePageSlug() {
             <RacePageHeader heading={year + ' Archive'} removeImg="true" />
             <ListBlock title={'All Events'}>
                 {race.map((race: YearlyRaceDataTypes) =>
-                    <RaceBlock key={race.circuit_id} circuitName={race.name} winner={'NULL'} date={race.date} time={race.time} flagcode={race.country_code} />
+                    <RaceBlock key={race.date} circuitName={race.name} winner={'NULL'} date={race.date} time={race.time} flagcode={race.country_code} />
                 )}
             </ListBlock>
         </main>
