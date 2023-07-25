@@ -1,8 +1,6 @@
 use rusqlite::{Connection, params};
 use tauri::AppHandle;
 use std::{error::Error, vec};
-use std::fs::File;
-use csv::ReaderBuilder;
 use serde::Serialize;
 use chrono::Duration;
 use std::fs;
@@ -96,7 +94,7 @@ pub fn connect_to_db(app_handle: &AppHandle) -> Result<Connection, rusqlite::Err
     let app_dir = app_handle.path_resolver().app_data_dir().expect("The app data directory should exist.");
     fs::create_dir_all(&app_dir).expect("The app data directory should be created.");
     let sqlite_path = app_dir.join("F1.db");
-
+    println!("{:?}",sqlite_path);
     let db = Connection::open(sqlite_path)?;
 
     Ok(db)
@@ -358,566 +356,566 @@ Creates all required tables if they dont exists
 /*
 Reads the races.csv and populates the races table with all rows
 */
-fn races_csv(conn: &Connection, sql_rows: i64, filepath: String) {
-    let file = File::open(filepath.clone()).expect("ERROR: Unable to access CSV");
-    let mut reader = ReaderBuilder::new().flexible(true).from_reader(file);
-    let csv_rows: usize = reader.records().count();
-    if sql_rows != csv_rows as i64 {
-        let file = File::open(filepath).expect("ERROR: Unable to access CSV");
-        let mut reader = ReaderBuilder::new().flexible(true).from_reader(file);
-        for row in reader.records() {
-            let record = row.expect("ERROR: Unable to access row");
-            let race_id = &record[0];
-            let year = &record[1];
-            let round = &record[2];
-            let circuit_id = &record[3];
-            let name = &record[4];
-            let date = &record[5];
-            let time = &record[6];
-            let url = &record[7];
-            let fp1_date = &record[8];
-            let fp1_time = &record[9];
-            let fp2_date = &record[10];
-            let fp2_time = &record[11];
-            let fp3_date = &record[12];
-            let fp3_time = &record[13];
-            let quali_date = &record[14];
-            let quali_time = &record[15];
-            let sprint_date = &record[16];
-            let sprint_time = &record[17];
+// fn races_csv(conn: &Connection, sql_rows: i64, filepath: String) {
+//     let file = File::open(filepath.clone()).expect("ERROR: Unable to access CSV");
+//     let mut reader = ReaderBuilder::new().flexible(true).from_reader(file);
+//     let csv_rows: usize = reader.records().count();
+//     if sql_rows != csv_rows as i64 {
+//         let file = File::open(filepath).expect("ERROR: Unable to access CSV");
+//         let mut reader = ReaderBuilder::new().flexible(true).from_reader(file);
+//         for row in reader.records() {
+//             let record = row.expect("ERROR: Unable to access row");
+//             let race_id = &record[0];
+//             let year = &record[1];
+//             let round = &record[2];
+//             let circuit_id = &record[3];
+//             let name = &record[4];
+//             let date = &record[5];
+//             let time = &record[6];
+//             let url = &record[7];
+//             let fp1_date = &record[8];
+//             let fp1_time = &record[9];
+//             let fp2_date = &record[10];
+//             let fp2_time = &record[11];
+//             let fp3_date = &record[12];
+//             let fp3_time = &record[13];
+//             let quali_date = &record[14];
+//             let quali_time = &record[15];
+//             let sprint_date = &record[16];
+//             let sprint_time = &record[17];
 
-            conn.execute(
-                "INSERT INTO races (
-                    raceId,
-                    year,
-                    round,
-                    circuitId,
-                    name,
-                    date,
-                    time,
-                    url,
-                    fp1_date,
-                    fp1_time,
-                    fp2_date,
-                    fp2_time,
-                    fp3_date,
-                    fp3_time,
-                    quali_date,
-                    quali_time,
-                    sprint_date,
-                    sprint_time
-                ) VALUES (?1, ?2, ?3, ?4, ?5, ?6, ?7, ?8, ?9, ?10, ?11, ?12, ?13, ?14, ?15, ?16, ?17, ?18)", 
-                params![
-                    race_id,year,round,circuit_id,name,date,time,url,
-                    fp1_date,fp1_time,fp2_date,fp2_time,fp3_date,fp3_time,
-                    quali_date,quali_time,sprint_date,sprint_time,
-                    ],
-                ).expect("ERROR: Unable to Insert Race Row");
-        }
-        println!("races TABLE POPULATED VIA CSV");
-    } else {
-        println!("races TABLE ALREADY UP-TO-DATE");
-    }
+//             conn.execute(
+//                 "INSERT INTO races (
+//                     raceId,
+//                     year,
+//                     round,
+//                     circuitId,
+//                     name,
+//                     date,
+//                     time,
+//                     url,
+//                     fp1_date,
+//                     fp1_time,
+//                     fp2_date,
+//                     fp2_time,
+//                     fp3_date,
+//                     fp3_time,
+//                     quali_date,
+//                     quali_time,
+//                     sprint_date,
+//                     sprint_time
+//                 ) VALUES (?1, ?2, ?3, ?4, ?5, ?6, ?7, ?8, ?9, ?10, ?11, ?12, ?13, ?14, ?15, ?16, ?17, ?18)", 
+//                 params![
+//                     race_id,year,round,circuit_id,name,date,time,url,
+//                     fp1_date,fp1_time,fp2_date,fp2_time,fp3_date,fp3_time,
+//                     quali_date,quali_time,sprint_date,sprint_time,
+//                     ],
+//                 ).expect("ERROR: Unable to Insert Race Row");
+//         }
+//         println!("races TABLE POPULATED VIA CSV");
+//     } else {
+//         println!("races TABLE ALREADY UP-TO-DATE");
+//     }
 
-}
+// }
 
-/*
-Reads the lap_times.csv and populates the lapTimes table with all rows
-*/
-fn lap_times_csv(conn: &Connection, sql_rows: i64, filepath: String) {
-    let file = File::open(filepath.clone()).expect("ERROR: Unable to access CSV");
-    let mut reader = ReaderBuilder::new().flexible(true).from_reader(file);
-    let csv_rows: usize = reader.records().count();
-    if sql_rows != csv_rows as i64 {
-        let file = File::open(filepath).expect("ERROR: Unable to access CSV");
-        let mut reader = ReaderBuilder::new().flexible(true).from_reader(file);
-        for row in reader.records() {
-            let record = row.expect("ERROR: Unable to access row");
-            let race_id = &record[0];
-            let driver_id = &record[1];
-            let lap = &record[2];
-            let position = &record[3];
-            let time = &record[4];
-            let milliseconds = &record[5];
+// /*
+// Reads the lap_times.csv and populates the lapTimes table with all rows
+// */
+// fn lap_times_csv(conn: &Connection, sql_rows: i64, filepath: String) {
+//     let file = File::open(filepath.clone()).expect("ERROR: Unable to access CSV");
+//     let mut reader = ReaderBuilder::new().flexible(true).from_reader(file);
+//     let csv_rows: usize = reader.records().count();
+//     if sql_rows != csv_rows as i64 {
+//         let file = File::open(filepath).expect("ERROR: Unable to access CSV");
+//         let mut reader = ReaderBuilder::new().flexible(true).from_reader(file);
+//         for row in reader.records() {
+//             let record = row.expect("ERROR: Unable to access row");
+//             let race_id = &record[0];
+//             let driver_id = &record[1];
+//             let lap = &record[2];
+//             let position = &record[3];
+//             let time = &record[4];
+//             let milliseconds = &record[5];
 
-            conn.execute(
-                "INSERT INTO lapTimes (
-                    raceId,
-                    driverId,
-                    lap,
-                    position,
-                    time,
-                    milliseconds
-                ) VALUES (?1, ?2, ?3, ?4, ?5, ?6)", 
-                params![
-                    race_id,driver_id,lap,position,time,milliseconds,
-                    ],
-                ).expect("ERROR: Unable to Insert lapTimes Row");
-        }
-        println!("lapTimes TABLE POPULATED VIA CSV");
-    } else {
-        println!("lapTimes TABLE ALREADY UP-TO-DATE");
-    }
+//             conn.execute(
+//                 "INSERT INTO lapTimes (
+//                     raceId,
+//                     driverId,
+//                     lap,
+//                     position,
+//                     time,
+//                     milliseconds
+//                 ) VALUES (?1, ?2, ?3, ?4, ?5, ?6)", 
+//                 params![
+//                     race_id,driver_id,lap,position,time,milliseconds,
+//                     ],
+//                 ).expect("ERROR: Unable to Insert lapTimes Row");
+//         }
+//         println!("lapTimes TABLE POPULATED VIA CSV");
+//     } else {
+//         println!("lapTimes TABLE ALREADY UP-TO-DATE");
+//     }
 
-}
+// }
 
-/*
-Reads the qualifying.csv and populates the qualifying table with all rows
-*/
-fn qualifying_csv(conn: &Connection, sql_rows: i64, filepath: String) {
-    let file = File::open(filepath.clone()).expect("ERROR: Unable to access CSV");
-    let mut reader = ReaderBuilder::new().flexible(true).from_reader(file);
-    let csv_rows: usize = reader.records().count();
-    if sql_rows != csv_rows as i64 {
-        let file = File::open(filepath).expect("ERROR: Unable to access CSV");
-        let mut reader = ReaderBuilder::new().flexible(true).from_reader(file);
-        for row in reader.records() {
-            let record = row.expect("ERROR: Unable to access row");
-            let qualify_id = &record[0];
-            let race_id = &record[1];
-            let driver_id = &record[2];
-            let constructor_id = &record[3];
-            let number = &record[4];
-            let position = &record[5];
-            let q1 = &record[6];
-            let q2 = &record[7];
-            let q3 = &record[8];
+// /*
+// Reads the qualifying.csv and populates the qualifying table with all rows
+// */
+// fn qualifying_csv(conn: &Connection, sql_rows: i64, filepath: String) {
+//     let file = File::open(filepath.clone()).expect("ERROR: Unable to access CSV");
+//     let mut reader = ReaderBuilder::new().flexible(true).from_reader(file);
+//     let csv_rows: usize = reader.records().count();
+//     if sql_rows != csv_rows as i64 {
+//         let file = File::open(filepath).expect("ERROR: Unable to access CSV");
+//         let mut reader = ReaderBuilder::new().flexible(true).from_reader(file);
+//         for row in reader.records() {
+//             let record = row.expect("ERROR: Unable to access row");
+//             let qualify_id = &record[0];
+//             let race_id = &record[1];
+//             let driver_id = &record[2];
+//             let constructor_id = &record[3];
+//             let number = &record[4];
+//             let position = &record[5];
+//             let q1 = &record[6];
+//             let q2 = &record[7];
+//             let q3 = &record[8];
 
-            conn.execute(
-                "INSERT INTO qualifying (
-                    qualifyId,
-                    raceId,
-                    driverId,
-                    constructorId,
-                    number,
-                    position,
-                    q1,
-                    q2,
-                    q3
-                ) VALUES (?1, ?2, ?3, ?4, ?5, ?6, ?7, ?8, ?9)", 
-                params![
-                    qualify_id,race_id,driver_id,constructor_id,number,position,q1,q2,q3,
-                    ],
-                ).expect("ERROR: Unable to Insert qualifying Row");
-        }
-        println!("qualifying TABLE POPULATED VIA CSV");
-    } else {
-        println!("qualifying TABLE ALREADY UP-TO-DATE");
-    }
+//             conn.execute(
+//                 "INSERT INTO qualifying (
+//                     qualifyId,
+//                     raceId,
+//                     driverId,
+//                     constructorId,
+//                     number,
+//                     position,
+//                     q1,
+//                     q2,
+//                     q3
+//                 ) VALUES (?1, ?2, ?3, ?4, ?5, ?6, ?7, ?8, ?9)", 
+//                 params![
+//                     qualify_id,race_id,driver_id,constructor_id,number,position,q1,q2,q3,
+//                     ],
+//                 ).expect("ERROR: Unable to Insert qualifying Row");
+//         }
+//         println!("qualifying TABLE POPULATED VIA CSV");
+//     } else {
+//         println!("qualifying TABLE ALREADY UP-TO-DATE");
+//     }
 
-}
+// }
 
-/*
-Reads the results.csv and populates the results table with all rows
-*/
-fn results_csv(conn: &Connection, sql_rows: i64, filepath: String) {
-    let file = File::open(filepath.clone()).expect("ERROR: Unable to access CSV");
-    let mut reader = ReaderBuilder::new().flexible(true).from_reader(file);
-    let csv_rows: usize = reader.records().count();
-    if sql_rows != csv_rows as i64 {
-        let file = File::open(filepath).expect("ERROR: Unable to access CSV");
-        let mut reader = ReaderBuilder::new().flexible(true).from_reader(file);
-        for row in reader.records() {
-            let record = row.expect("ERROR: Unable to access row");
-            let result_id = &record[0];
-            let race_id = &record[1];
-            let driver_id = &record[2];
-            let constructor_id = &record[3];
-            let number = &record[4];
-            let grid = &record[5];
-            let position = &record[6];
-            let position_text = &record[7];
-            let position_order = &record[8];
-            let points = &record[9];
-            let laps = &record[10];
-            let time = &record[11];
-            let milliseconds = &record[12];
-            let fastest_lap = &record[13];
-            let rank = &record[14];
-            let fastest_lap_time = &record[15];
-            let fastest_lap_speed = &record[16];
-            let status_id = &record[17];
+// /*
+// Reads the results.csv and populates the results table with all rows
+// */
+// fn results_csv(conn: &Connection, sql_rows: i64, filepath: String) {
+//     let file = File::open(filepath.clone()).expect("ERROR: Unable to access CSV");
+//     let mut reader = ReaderBuilder::new().flexible(true).from_reader(file);
+//     let csv_rows: usize = reader.records().count();
+//     if sql_rows != csv_rows as i64 {
+//         let file = File::open(filepath).expect("ERROR: Unable to access CSV");
+//         let mut reader = ReaderBuilder::new().flexible(true).from_reader(file);
+//         for row in reader.records() {
+//             let record = row.expect("ERROR: Unable to access row");
+//             let result_id = &record[0];
+//             let race_id = &record[1];
+//             let driver_id = &record[2];
+//             let constructor_id = &record[3];
+//             let number = &record[4];
+//             let grid = &record[5];
+//             let position = &record[6];
+//             let position_text = &record[7];
+//             let position_order = &record[8];
+//             let points = &record[9];
+//             let laps = &record[10];
+//             let time = &record[11];
+//             let milliseconds = &record[12];
+//             let fastest_lap = &record[13];
+//             let rank = &record[14];
+//             let fastest_lap_time = &record[15];
+//             let fastest_lap_speed = &record[16];
+//             let status_id = &record[17];
 
-            conn.execute(
-                "INSERT INTO results (
-                    resultId,
-                    raceId,
-                    driverId,
-                    constructorId,
-                    number,
-                    grid,
-                    position,
-                    positionText,
-                    positionOrder,
-                    points,
-                    laps,
-                    time,
-                    milliseconds,
-                    fastestLap,
-                    rank,
-                    fastestLapTime,
-                    fastestLapSpeed,
-                    statusId
-                ) VALUES (?1, ?2, ?3, ?4, ?5, ?6, ?7, ?8, ?9, ?10, ?11, ?12, ?13, ?14, ?15, ?16, ?17, ?18)", 
-                params![
-                    result_id,race_id,driver_id,constructor_id,number,grid,position,position_text,
-                    position_order,points,laps,time,milliseconds,fastest_lap,
-                    rank,fastest_lap_time,fastest_lap_speed,status_id,
-                    ],
-                ).expect("ERROR: Unable to Insert results Row");
-        }
-        println!("results TABLE POPULATED VIA CSV");
-    } else {
-        println!("results TABLE ALREADY UP-TO-DATE");
-    }
+//             conn.execute(
+//                 "INSERT INTO results (
+//                     resultId,
+//                     raceId,
+//                     driverId,
+//                     constructorId,
+//                     number,
+//                     grid,
+//                     position,
+//                     positionText,
+//                     positionOrder,
+//                     points,
+//                     laps,
+//                     time,
+//                     milliseconds,
+//                     fastestLap,
+//                     rank,
+//                     fastestLapTime,
+//                     fastestLapSpeed,
+//                     statusId
+//                 ) VALUES (?1, ?2, ?3, ?4, ?5, ?6, ?7, ?8, ?9, ?10, ?11, ?12, ?13, ?14, ?15, ?16, ?17, ?18)", 
+//                 params![
+//                     result_id,race_id,driver_id,constructor_id,number,grid,position,position_text,
+//                     position_order,points,laps,time,milliseconds,fastest_lap,
+//                     rank,fastest_lap_time,fastest_lap_speed,status_id,
+//                     ],
+//                 ).expect("ERROR: Unable to Insert results Row");
+//         }
+//         println!("results TABLE POPULATED VIA CSV");
+//     } else {
+//         println!("results TABLE ALREADY UP-TO-DATE");
+//     }
 
-}
+// }
 
-/*
-Reads the sprint_results.csv and populates the sprintResults table with all rows
-*/
-fn sprint_results_csv(conn: &Connection, sql_rows: i64, filepath: String) {
-    let file = File::open(filepath.clone()).expect("ERROR: Unable to access CSV");
-    let mut reader = ReaderBuilder::new().flexible(true).from_reader(file);
-    let csv_rows: usize = reader.records().count();
-    if sql_rows != csv_rows as i64 {
-        let file = File::open(filepath).expect("ERROR: Unable to access CSV");
-        let mut reader = ReaderBuilder::new().flexible(true).from_reader(file);
-        for row in reader.records() {
-            let record = row.expect("ERROR: Unable to access row");
-            let sprint_result_id = &record[0];
-            let race_id = &record[1];
-            let driver_id = &record[2];
-            let constructor_id = &record[3];
-            let number = &record[4];
-            let grid = &record[5];
-            let position = &record[6];
-            let position_text = &record[7];
-            let position_order = &record[8];
-            let points = &record[9];
-            let laps = &record[10];
-            let time = &record[11];
-            let milliseconds = &record[12];
-            let fastest_lap = &record[13];
-            let fastest_lap_time = &record[14];
-            let status_id = &record[15];
+// /*
+// Reads the sprint_results.csv and populates the sprintResults table with all rows
+// */
+// fn sprint_results_csv(conn: &Connection, sql_rows: i64, filepath: String) {
+//     let file = File::open(filepath.clone()).expect("ERROR: Unable to access CSV");
+//     let mut reader = ReaderBuilder::new().flexible(true).from_reader(file);
+//     let csv_rows: usize = reader.records().count();
+//     if sql_rows != csv_rows as i64 {
+//         let file = File::open(filepath).expect("ERROR: Unable to access CSV");
+//         let mut reader = ReaderBuilder::new().flexible(true).from_reader(file);
+//         for row in reader.records() {
+//             let record = row.expect("ERROR: Unable to access row");
+//             let sprint_result_id = &record[0];
+//             let race_id = &record[1];
+//             let driver_id = &record[2];
+//             let constructor_id = &record[3];
+//             let number = &record[4];
+//             let grid = &record[5];
+//             let position = &record[6];
+//             let position_text = &record[7];
+//             let position_order = &record[8];
+//             let points = &record[9];
+//             let laps = &record[10];
+//             let time = &record[11];
+//             let milliseconds = &record[12];
+//             let fastest_lap = &record[13];
+//             let fastest_lap_time = &record[14];
+//             let status_id = &record[15];
 
-            conn.execute(
-                "INSERT INTO sprintResults (
-                    sprintResultId,
-                    raceId,
-                    driverId,
-                    constructorId,
-                    number,
-                    grid,
-                    position,
-                    positionText,
-                    positionOrder,
-                    points,
-                    laps,
-                    time,
-                    milliseconds,
-                    fastestLap,
-                    fastestLapTime,
-                    statusId
-                ) VALUES (?1, ?2, ?3, ?4, ?5, ?6, ?7, ?8, ?9, ?10, ?11, ?12, ?13, ?14, ?15, ?16)", 
-                params![
-                    sprint_result_id,race_id,driver_id,constructor_id,number,grid,position,position_text,
-                    position_order,points,laps,time,milliseconds,fastest_lap,
-                    fastest_lap_time,status_id,
-                    ],
-                ).expect("ERROR: Unable to Insert sprintResults Row");
-        }
-        println!("sprintResults TABLE POPULATED VIA CSV");
-    } else {
-        println!("sprintResults TABLE ALREADY UP-TO-DATE");
-    }
+//             conn.execute(
+//                 "INSERT INTO sprintResults (
+//                     sprintResultId,
+//                     raceId,
+//                     driverId,
+//                     constructorId,
+//                     number,
+//                     grid,
+//                     position,
+//                     positionText,
+//                     positionOrder,
+//                     points,
+//                     laps,
+//                     time,
+//                     milliseconds,
+//                     fastestLap,
+//                     fastestLapTime,
+//                     statusId
+//                 ) VALUES (?1, ?2, ?3, ?4, ?5, ?6, ?7, ?8, ?9, ?10, ?11, ?12, ?13, ?14, ?15, ?16)", 
+//                 params![
+//                     sprint_result_id,race_id,driver_id,constructor_id,number,grid,position,position_text,
+//                     position_order,points,laps,time,milliseconds,fastest_lap,
+//                     fastest_lap_time,status_id,
+//                     ],
+//                 ).expect("ERROR: Unable to Insert sprintResults Row");
+//         }
+//         println!("sprintResults TABLE POPULATED VIA CSV");
+//     } else {
+//         println!("sprintResults TABLE ALREADY UP-TO-DATE");
+//     }
 
-}
+// }
 
-/*
-Reads the drivers.csv and populates the drivers table with all rows
-*/
-fn drivers_csv(conn: &Connection, sql_rows: i64, filepath: String) {
-    let file = File::open(filepath.clone()).expect("ERROR: Unable to access CSV");
-    let mut reader = ReaderBuilder::new().flexible(true).from_reader(file);
-    let csv_rows: usize = reader.records().count();
-    if sql_rows != csv_rows as i64 {
-        let file = File::open(filepath).expect("ERROR: Unable to access CSV");
-        let mut reader = ReaderBuilder::new().flexible(true).from_reader(file);
-        for row in reader.records() {
-            let record = row.expect("ERROR: Unable to access row");
-            let driver_id = &record[0];
-            let driver_ref = &record[1];
-            let number = &record[2];
-            let code = &record[3];
-            let forename = &record[4];
-            let surename = &record[5];
-            let dob = &record[6];
-            let nationality = &record[7];
-            let url = &record[8];
+// /*
+// Reads the drivers.csv and populates the drivers table with all rows
+// */
+// fn drivers_csv(conn: &Connection, sql_rows: i64, filepath: String) {
+//     let file = File::open(filepath.clone()).expect("ERROR: Unable to access CSV");
+//     let mut reader = ReaderBuilder::new().flexible(true).from_reader(file);
+//     let csv_rows: usize = reader.records().count();
+//     if sql_rows != csv_rows as i64 {
+//         let file = File::open(filepath).expect("ERROR: Unable to access CSV");
+//         let mut reader = ReaderBuilder::new().flexible(true).from_reader(file);
+//         for row in reader.records() {
+//             let record = row.expect("ERROR: Unable to access row");
+//             let driver_id = &record[0];
+//             let driver_ref = &record[1];
+//             let number = &record[2];
+//             let code = &record[3];
+//             let forename = &record[4];
+//             let surename = &record[5];
+//             let dob = &record[6];
+//             let nationality = &record[7];
+//             let url = &record[8];
 
-            conn.execute(
-                "INSERT INTO drivers (
-                    driverId,
-                    driverRef,
-                    number,
-                    code,
-                    forename,
-                    surename,
-                    dob,
-                    nationality,
-                    url
-                ) VALUES (?1, ?2, ?3, ?4, ?5, ?6, ?7, ?8, ?9)", 
-                params![
-                    driver_id,driver_ref,number,code,forename,surename,dob,nationality,url,
-                    ],
-                ).expect("ERROR: Unable to Insert Driver Row");
-        }
-        println!("drivers TABLE POPULATED VIA CSV");
-    } else {
-        println!("drivers TABLE ALREADY UP-TO-DATE");
-    }
+//             conn.execute(
+//                 "INSERT INTO drivers (
+//                     driverId,
+//                     driverRef,
+//                     number,
+//                     code,
+//                     forename,
+//                     surename,
+//                     dob,
+//                     nationality,
+//                     url
+//                 ) VALUES (?1, ?2, ?3, ?4, ?5, ?6, ?7, ?8, ?9)", 
+//                 params![
+//                     driver_id,driver_ref,number,code,forename,surename,dob,nationality,url,
+//                     ],
+//                 ).expect("ERROR: Unable to Insert Driver Row");
+//         }
+//         println!("drivers TABLE POPULATED VIA CSV");
+//     } else {
+//         println!("drivers TABLE ALREADY UP-TO-DATE");
+//     }
 
-}
+// }
 
-/*
-Reads the driver_standings.csv and populates the driver_standings table with all rows
-*/
-fn driver_standings_csv(conn: &Connection, sql_rows: i64, filepath: String) {
-    let file = File::open(filepath.clone()).expect("ERROR: Unable to access CSV");
-    let mut reader = ReaderBuilder::new().flexible(true).from_reader(file);
-    let csv_rows: usize = reader.records().count();
-    if sql_rows != csv_rows as i64 {
-        let file = File::open(filepath).expect("ERROR: Unable to access CSV");
-        let mut reader = ReaderBuilder::new().flexible(true).from_reader(file);
-        for row in reader.records() {
-            let record = row.expect("ERROR: Unable to access row");
-            let driver_standings_id = &record[0];
-            let race_id = &record[1];
-            let driver_id = &record[2];
-            let points = &record[3];
-            let position = &record[4];
-            let position_text = &record[5];
-            let wins = &record[6];
+// /*
+// Reads the driver_standings.csv and populates the driver_standings table with all rows
+// */
+// fn driver_standings_csv(conn: &Connection, sql_rows: i64, filepath: String) {
+//     let file = File::open(filepath.clone()).expect("ERROR: Unable to access CSV");
+//     let mut reader = ReaderBuilder::new().flexible(true).from_reader(file);
+//     let csv_rows: usize = reader.records().count();
+//     if sql_rows != csv_rows as i64 {
+//         let file = File::open(filepath).expect("ERROR: Unable to access CSV");
+//         let mut reader = ReaderBuilder::new().flexible(true).from_reader(file);
+//         for row in reader.records() {
+//             let record = row.expect("ERROR: Unable to access row");
+//             let driver_standings_id = &record[0];
+//             let race_id = &record[1];
+//             let driver_id = &record[2];
+//             let points = &record[3];
+//             let position = &record[4];
+//             let position_text = &record[5];
+//             let wins = &record[6];
 
-            conn.execute(
-                "INSERT INTO driverStandings (
-                    driverStandingsId,
-                    raceId,
-                    driverId,
-                    points,
-                    position,
-                    positionText,
-                    wins
-                ) VALUES (?1, ?2, ?3, ?4, ?5, ?6, ?7)", 
-                params![
-                    driver_standings_id,race_id,driver_id,points,position,position_text,wins,
-                    ],
-                ).expect("ERROR: Unable to Insert Driver Standings Row");
-        }
-        println!("driverStandings TABLE POPULATED VIA CSV");
-    } else {
-        println!("driverStandings TABLE ALREADY UP-TO-DATE");
-    }
+//             conn.execute(
+//                 "INSERT INTO driverStandings (
+//                     driverStandingsId,
+//                     raceId,
+//                     driverId,
+//                     points,
+//                     position,
+//                     positionText,
+//                     wins
+//                 ) VALUES (?1, ?2, ?3, ?4, ?5, ?6, ?7)", 
+//                 params![
+//                     driver_standings_id,race_id,driver_id,points,position,position_text,wins,
+//                     ],
+//                 ).expect("ERROR: Unable to Insert Driver Standings Row");
+//         }
+//         println!("driverStandings TABLE POPULATED VIA CSV");
+//     } else {
+//         println!("driverStandings TABLE ALREADY UP-TO-DATE");
+//     }
 
-}
+// }
 
-/*
-Reads the constructors.csv and populates the constructors table with all rows
-*/
-fn constructors_csv(conn: &Connection, sql_rows: i64, filepath: String) {
-    let file = File::open(filepath.clone()).expect("ERROR: Unable to access CSV");
-    let mut reader = ReaderBuilder::new().flexible(true).from_reader(file);
-    let csv_rows: usize = reader.records().count();
-    if sql_rows != csv_rows as i64 {
-        let file = File::open(filepath).expect("ERROR: Unable to access CSV");
-        let mut reader = ReaderBuilder::new().flexible(true).from_reader(file);
-        for row in reader.records() {
-            let record = row.expect("ERROR: Unable to access row");
-            let constructor_id = &record[0];
-            let constructor_ref = &record[1];
-            let name = &record[2];
-            let nationality = &record[3];
-            let url = &record[4];
+// /*
+// Reads the constructors.csv and populates the constructors table with all rows
+// */
+// fn constructors_csv(conn: &Connection, sql_rows: i64, filepath: String) {
+//     let file = File::open(filepath.clone()).expect("ERROR: Unable to access CSV");
+//     let mut reader = ReaderBuilder::new().flexible(true).from_reader(file);
+//     let csv_rows: usize = reader.records().count();
+//     if sql_rows != csv_rows as i64 {
+//         let file = File::open(filepath).expect("ERROR: Unable to access CSV");
+//         let mut reader = ReaderBuilder::new().flexible(true).from_reader(file);
+//         for row in reader.records() {
+//             let record = row.expect("ERROR: Unable to access row");
+//             let constructor_id = &record[0];
+//             let constructor_ref = &record[1];
+//             let name = &record[2];
+//             let nationality = &record[3];
+//             let url = &record[4];
 
-            conn.execute(
-                "INSERT INTO constructors (
-                    constructorId,
-                    constructorRef,
-                    name,
-                    nationality,
-                    url
-                ) VALUES (?1, ?2, ?3, ?4, ?5)", 
-                params![
-                    constructor_id,constructor_ref,name,nationality,url,
-                    ],
-                ).expect("ERROR: Unable to Insert Driver Standings Row");
-        }
-        println!("constructors TABLE POPULATED VIA CSV");
-    } else {
-        println!("constructors TABLE ALREADY UP-TO-DATE");
-    }
+//             conn.execute(
+//                 "INSERT INTO constructors (
+//                     constructorId,
+//                     constructorRef,
+//                     name,
+//                     nationality,
+//                     url
+//                 ) VALUES (?1, ?2, ?3, ?4, ?5)", 
+//                 params![
+//                     constructor_id,constructor_ref,name,nationality,url,
+//                     ],
+//                 ).expect("ERROR: Unable to Insert Driver Standings Row");
+//         }
+//         println!("constructors TABLE POPULATED VIA CSV");
+//     } else {
+//         println!("constructors TABLE ALREADY UP-TO-DATE");
+//     }
 
-}
+// }
 
-/*
-Reads the constructor_standings.csv and populates the constructorStandings_table with all rows
-*/
-fn constructor_standings_csv(conn: &Connection, sql_rows: i64, filepath: String) {
-    let file = File::open(filepath.clone()).expect("ERROR: Unable to access CSV");
-    let mut reader = ReaderBuilder::new().flexible(true).from_reader(file);
-    let csv_rows: usize = reader.records().count();
-    if sql_rows != csv_rows as i64 {
-        let file = File::open(filepath).expect("ERROR: Unable to access CSV");
-        let mut reader = ReaderBuilder::new().flexible(true).from_reader(file);
-        for row in reader.records() {
-            let record = row.expect("ERROR: Unable to access row");
-            let constructor_standings_id = &record[0];
-            let race_id = &record[1];
-            let constructor_id = &record[2];
-            let points = &record[3];
-            let position = &record[4];
-            let position_text = &record[5];
-            let wins = &record[6];
+// /*
+// Reads the constructor_standings.csv and populates the constructorStandings_table with all rows
+// */
+// fn constructor_standings_csv(conn: &Connection, sql_rows: i64, filepath: String) {
+//     let file = File::open(filepath.clone()).expect("ERROR: Unable to access CSV");
+//     let mut reader = ReaderBuilder::new().flexible(true).from_reader(file);
+//     let csv_rows: usize = reader.records().count();
+//     if sql_rows != csv_rows as i64 {
+//         let file = File::open(filepath).expect("ERROR: Unable to access CSV");
+//         let mut reader = ReaderBuilder::new().flexible(true).from_reader(file);
+//         for row in reader.records() {
+//             let record = row.expect("ERROR: Unable to access row");
+//             let constructor_standings_id = &record[0];
+//             let race_id = &record[1];
+//             let constructor_id = &record[2];
+//             let points = &record[3];
+//             let position = &record[4];
+//             let position_text = &record[5];
+//             let wins = &record[6];
 
-            conn.execute(
-                "INSERT INTO constructorStandings (
-                    constructorStandingsId,
-                    raceId,
-                    constructorId,
-                    points,
-                    position,
-                    positionText,
-                    wins
-                ) VALUES (?1, ?2, ?3, ?4, ?5, ?6, ?7)", 
-                params![
-                    constructor_standings_id,race_id,constructor_id,points,position,position_text,wins,
-                    ],
-                ).expect("ERROR: Unable to Insert Constructor Standings Row");
-        }
-        println!("constructorStandings TABLE POPULATED VIA CSV");
-    } else {
-        println!("constructorStandings TABLE ALREADY UP-TO-DATE");
-    }
+//             conn.execute(
+//                 "INSERT INTO constructorStandings (
+//                     constructorStandingsId,
+//                     raceId,
+//                     constructorId,
+//                     points,
+//                     position,
+//                     positionText,
+//                     wins
+//                 ) VALUES (?1, ?2, ?3, ?4, ?5, ?6, ?7)", 
+//                 params![
+//                     constructor_standings_id,race_id,constructor_id,points,position,position_text,wins,
+//                     ],
+//                 ).expect("ERROR: Unable to Insert Constructor Standings Row");
+//         }
+//         println!("constructorStandings TABLE POPULATED VIA CSV");
+//     } else {
+//         println!("constructorStandings TABLE ALREADY UP-TO-DATE");
+//     }
 
-}
+// }
 
-/*
-Reads the constructor_results.csv and populates the constructorResults table with all rows
-*/
-fn constructor_results_csv(conn: &Connection, sql_rows: i64, filepath: String) {
-    let file = File::open(filepath.clone()).expect("ERROR: Unable to access CSV");
-    let mut reader = ReaderBuilder::new().flexible(true).from_reader(file);
-    let csv_rows: usize = reader.records().count();
-    if sql_rows != csv_rows as i64 {
-        let file = File::open(filepath).expect("ERROR: Unable to access CSV");
-        let mut reader = ReaderBuilder::new().flexible(true).from_reader(file);
-        for row in reader.records() {
-            let record = row.expect("ERROR: Unable to access row");
-            let constructor_results_id = &record[0];
-            let race_id = &record[1];
-            let constructor_id = &record[2];
-            let points = &record[3];
-            let status = &record[4];
+// /*
+// Reads the constructor_results.csv and populates the constructorResults table with all rows
+// */
+// fn constructor_results_csv(conn: &Connection, sql_rows: i64, filepath: String) {
+//     let file = File::open(filepath.clone()).expect("ERROR: Unable to access CSV");
+//     let mut reader = ReaderBuilder::new().flexible(true).from_reader(file);
+//     let csv_rows: usize = reader.records().count();
+//     if sql_rows != csv_rows as i64 {
+//         let file = File::open(filepath).expect("ERROR: Unable to access CSV");
+//         let mut reader = ReaderBuilder::new().flexible(true).from_reader(file);
+//         for row in reader.records() {
+//             let record = row.expect("ERROR: Unable to access row");
+//             let constructor_results_id = &record[0];
+//             let race_id = &record[1];
+//             let constructor_id = &record[2];
+//             let points = &record[3];
+//             let status = &record[4];
 
-            conn.execute(
-                "INSERT INTO constructorResults (
-                    constructorResultsId,
-                    raceId,
-                    constructorId,
-                    points,
-                    status
-                ) VALUES (?1, ?2, ?3, ?4, ?5)", 
-                params![
-                    constructor_results_id,race_id,constructor_id,points,status,
-                    ],
-                ).expect("ERROR: Unable to Insert Constructor Results Row");
-        }
-        println!("constructorResults TABLE POPULATED VIA CSV");
-    } else {
-        println!("constructorResults TABLE ALREADY UP-TO-DATE");
-    }
+//             conn.execute(
+//                 "INSERT INTO constructorResults (
+//                     constructorResultsId,
+//                     raceId,
+//                     constructorId,
+//                     points,
+//                     status
+//                 ) VALUES (?1, ?2, ?3, ?4, ?5)", 
+//                 params![
+//                     constructor_results_id,race_id,constructor_id,points,status,
+//                     ],
+//                 ).expect("ERROR: Unable to Insert Constructor Results Row");
+//         }
+//         println!("constructorResults TABLE POPULATED VIA CSV");
+//     } else {
+//         println!("constructorResults TABLE ALREADY UP-TO-DATE");
+//     }
 
-}
+// }
 
-/*
-Reads the circuits.csv and populates the circuits table with all rows
-*/
-fn circuits_csv(conn: &Connection, sql_rows: i64, filepath: String) {
-    let file = File::open(filepath.clone()).expect("ERROR: Unable to access CSV");
-    let mut reader = ReaderBuilder::new().flexible(true).from_reader(file);
-    let csv_rows: usize = reader.records().count();
-    if sql_rows != csv_rows as i64 {
-        let file = File::open(filepath).expect("ERROR: Unable to access CSV");
-        let mut reader = ReaderBuilder::new().flexible(true).from_reader(file);
-        for row in reader.records() {
-            let record = row.expect("ERROR: Unable to access row");
-            let circuit_id = &record[0];
-            let circuit_ref = &record[1];
-            let name = &record[2];
-            let location = &record[3];
-            let country = &record[4];
-            let lat = &record[5];
-            let lng = &record[6];
-            let alt = &record[7];
-            let url = &record[8];
+// /*
+// Reads the circuits.csv and populates the circuits table with all rows
+// */
+// fn circuits_csv(conn: &Connection, sql_rows: i64, filepath: String) {
+//     let file = File::open(filepath.clone()).expect("ERROR: Unable to access CSV");
+//     let mut reader = ReaderBuilder::new().flexible(true).from_reader(file);
+//     let csv_rows: usize = reader.records().count();
+//     if sql_rows != csv_rows as i64 {
+//         let file = File::open(filepath).expect("ERROR: Unable to access CSV");
+//         let mut reader = ReaderBuilder::new().flexible(true).from_reader(file);
+//         for row in reader.records() {
+//             let record = row.expect("ERROR: Unable to access row");
+//             let circuit_id = &record[0];
+//             let circuit_ref = &record[1];
+//             let name = &record[2];
+//             let location = &record[3];
+//             let country = &record[4];
+//             let lat = &record[5];
+//             let lng = &record[6];
+//             let alt = &record[7];
+//             let url = &record[8];
 
-            conn.execute(
-                "INSERT INTO circuits (
-                    circuitId,
-                    circuitRef,
-                    name,
-                    location,
-                    country,
-                    lat,
-                    lng,
-                    alt,
-                    url
-                ) VALUES (?1, ?2, ?3, ?4, ?5, ?6, ?7, ?8, ?9)", 
-                params![
-                    circuit_id,circuit_ref,name,location,country,lat,lng,alt,url,
-                    ],
-                ).expect("ERROR: Unable to Insert Circuit Row");
-        }
-        println!("circuits TABLE POPULATED VIA CSV");
-    } else {
-        println!("circuits TABLE ALREADY UP-TO-DATE");
-    }
+//             conn.execute(
+//                 "INSERT INTO circuits (
+//                     circuitId,
+//                     circuitRef,
+//                     name,
+//                     location,
+//                     country,
+//                     lat,
+//                     lng,
+//                     alt,
+//                     url
+//                 ) VALUES (?1, ?2, ?3, ?4, ?5, ?6, ?7, ?8, ?9)", 
+//                 params![
+//                     circuit_id,circuit_ref,name,location,country,lat,lng,alt,url,
+//                     ],
+//                 ).expect("ERROR: Unable to Insert Circuit Row");
+//         }
+//         println!("circuits TABLE POPULATED VIA CSV");
+//     } else {
+//         println!("circuits TABLE ALREADY UP-TO-DATE");
+//     }
 
-}
+// }
 
-/*
-Reads the status.csv and populates the status table with all rows
-*/
-fn status_csv(conn: &Connection, sql_rows: i64, filepath: String) {
-    let file = File::open(filepath.clone()).expect("ERROR: Unable to access CSV");
-    let mut reader = ReaderBuilder::new().flexible(true).from_reader(file);
-    let csv_rows: usize = reader.records().count();
-    if sql_rows != csv_rows as i64 {
-        let file = File::open(filepath).expect("ERROR: Unable to access CSV");
-        let mut reader = ReaderBuilder::new().flexible(true).from_reader(file);
-        for row in reader.records() {
-            let record = row.expect("ERROR: Unable to access row");
-            let status_id = &record[0];
-            let status = &record[1];
+// /*
+// Reads the status.csv and populates the status table with all rows
+// */
+// fn status_csv(conn: &Connection, sql_rows: i64, filepath: String) {
+//     let file = File::open(filepath.clone()).expect("ERROR: Unable to access CSV");
+//     let mut reader = ReaderBuilder::new().flexible(true).from_reader(file);
+//     let csv_rows: usize = reader.records().count();
+//     if sql_rows != csv_rows as i64 {
+//         let file = File::open(filepath).expect("ERROR: Unable to access CSV");
+//         let mut reader = ReaderBuilder::new().flexible(true).from_reader(file);
+//         for row in reader.records() {
+//             let record = row.expect("ERROR: Unable to access row");
+//             let status_id = &record[0];
+//             let status = &record[1];
 
-            conn.execute(
-                "INSERT INTO status (
-                    statusId,
-                    status
-                ) VALUES (?1, ?2)", 
-                params![
-                    status_id,status,
-                    ],
-                ).expect("ERROR: Unable to Insert status Row");
-        }
-        println!("status TABLE POPULATED VIA CSV");
-    } else {
-        println!("circstatusuits TABLE ALREADY UP-TO-DATE");
-    }
+//             conn.execute(
+//                 "INSERT INTO status (
+//                     statusId,
+//                     status
+//                 ) VALUES (?1, ?2)", 
+//                 params![
+//                     status_id,status,
+//                     ],
+//                 ).expect("ERROR: Unable to Insert status Row");
+//         }
+//         println!("status TABLE POPULATED VIA CSV");
+//     } else {
+//         println!("circstatusuits TABLE ALREADY UP-TO-DATE");
+//     }
 
-}
+// }
 
 /*
 Query all races of a given year into Races Objects
