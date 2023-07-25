@@ -12,10 +12,7 @@
   },
   "tauri": {
     "allowlist": {
-      "all": true,
-      "fs": {
-        "scope": ["$DATA/*"]
-      }
+      "all": true
     },
     "bundle": {
       "active": true,
@@ -41,10 +38,7 @@
         "providerShortName": null,
         "signingIdentity": null
       },
-      "resources": [
-        "data/*.csv",
-        "data/f1.db"
-      ],
+      "resources": [],
       "shortDescription": "",
       "targets": "all",
       "windows": {

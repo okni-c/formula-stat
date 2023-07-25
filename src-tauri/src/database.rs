@@ -1,9 +1,11 @@
 use rusqlite::{Connection, params};
+use tauri::AppHandle;
 use std::{error::Error, vec};
 use std::fs::File;
 use csv::ReaderBuilder;
 use serde::Serialize;
-use chrono::{Duration};
+use chrono::Duration;
+use std::fs;
 
 use crate::func::{get_country_code_country, get_country_code_nationality, set_to_null_if_n, to_datetime, parse_datetime, to_utc};
 
@@ -90,263 +92,268 @@ pub struct Circuit {
 /*
 Establish a Connection to the f1_db and return that connection
 */
-pub fn connect_to_db() -> Result<Connection, Box<dyn Error>> {
-    let conn: Connection = Connection::open("f1.db").expect("ERROR: Unable to connect to f1.db");
-    Ok(conn)
+pub fn connect_to_db(app_handle: &AppHandle) -> Result<Connection, rusqlite::Error> {
+    let app_dir = app_handle.path_resolver().app_data_dir().expect("The app data directory should exist.");
+    fs::create_dir_all(&app_dir).expect("The app data directory should be created.");
+    let sqlite_path = app_dir.join("F1.db");
+
+    let db = Connection::open(sqlite_path)?;
+
+    Ok(db)
 }
 
 /*
 Creates all required tables if they dont exists
 */
-pub fn create_tables() -> Result<(), Box<dyn Error>> {
-    let conn: Connection = connect_to_db()?;
-    println!("Initalizing F1.db");
-    // Race Table
-    conn.execute(
-        "CREATE TABLE IF NOT EXISTS races (
-            raceId INTEGER PRIMARY KEY,
-            year INTEGER DEFAULT '0',
-            round INTEGER DEFAULT '0',
-            circuitId INTEGER DEFAULT '0',
-            name TEXT DEFAULT '',
-            date TEXT DEFAULT '0000-00-00',
-            time TEXT DEFAULT NULL,
-            url TEXT DEFAULT NULL,
-            fp1_date TEXT DEFAULT NULL,
-            fp1_time TEXT DEFAULT NULL,
-            fp2_date TEXT DEFAULT NULL,
-            fp2_time TEXT DEFAULT NULL,
-            fp3_date TEXT DEFAULT NULL,
-            fp3_time TEXT DEFAULT NULL,
-            quali_date TEXT DEFAULT NULL,
-            quali_time TEXT DEFAULT NULL,
-            sprint_date TEXT DEFAULT NULL,
-            sprint_time TEX DEFAULT NULLT
-        )", [],
-    )?;
-    println!("TABLE CREATED: races");
+// pub fn create_tables() -> Result<(), Box<dyn Error>> {
+//     let conn: Connection = connect_to_db()?;
+//     println!("Initalizing F1.db");
+//     // Race Table
+//     conn.execute(
+//         "CREATE TABLE IF NOT EXISTS races (
+//             raceId INTEGER PRIMARY KEY,
+//             year INTEGER DEFAULT '0',
+//             round INTEGER DEFAULT '0',
+//             circuitId INTEGER DEFAULT '0',
+//             name TEXT DEFAULT '',
+//             date TEXT DEFAULT '0000-00-00',
+//             time TEXT DEFAULT NULL,
+//             url TEXT DEFAULT NULL,
+//             fp1_date TEXT DEFAULT NULL,
+//             fp1_time TEXT DEFAULT NULL,
+//             fp2_date TEXT DEFAULT NULL,
+//             fp2_time TEXT DEFAULT NULL,
+//             fp3_date TEXT DEFAULT NULL,
+//             fp3_time TEXT DEFAULT NULL,
+//             quali_date TEXT DEFAULT NULL,
+//             quali_time TEXT DEFAULT NULL,
+//             sprint_date TEXT DEFAULT NULL,
+//             sprint_time TEX DEFAULT NULLT
+//         )", [],
+//     )?;
+//     println!("TABLE CREATED: races");
 
-    conn.execute(
-        "CREATE TABLE IF NOT EXISTS lapTimes (
-            raceId INTEGER NOT NULL,
-            driverId INTEGER NOT NULL,
-            lap INTEGER NOT NULL,
-            position INTEGER DEFAULT NULL,
-            time TEXT DEFAULT NULL,
-            milliseconds INTEGER DEFAULT NULL,
-            PRIMARY KEY (raceId, driverId, lap)
-        )", [],
-    )?;
-    println!("TABLE CREATED: lapTimes");
+//     conn.execute(
+//         "CREATE TABLE IF NOT EXISTS lapTimes (
+//             raceId INTEGER NOT NULL,
+//             driverId INTEGER NOT NULL,
+//             lap INTEGER NOT NULL,
+//             position INTEGER DEFAULT NULL,
+//             time TEXT DEFAULT NULL,
+//             milliseconds INTEGER DEFAULT NULL,
+//             PRIMARY KEY (raceId, driverId, lap)
+//         )", [],
+//     )?;
+//     println!("TABLE CREATED: lapTimes");
 
-    conn.execute(
-        "CREATE TABLE IF NOT EXISTS qualifying (
-            qualifyId INTEGER NOT NULL,
-            raceId INTEGER DEFAULT '0',
-            driverId INTEGER DEFAULT '0',
-            constructorId INTEGER DEFAULT '0',
-            number INTEGER DEFAULT '0',
-            position INTEGER DEFAULT NULL,
-            q1 TEXT DEFAULT NULL,
-            q2 TEXT DEFAULT NULL,
-            q3 TEXT DEFAULT NULL,
-            PRIMARY KEY (qualifyId)
-        )", [],
-    )?;
-    println!("TABLE CREATED: qualifying");
+//     conn.execute(
+//         "CREATE TABLE IF NOT EXISTS qualifying (
+//             qualifyId INTEGER NOT NULL,
+//             raceId INTEGER DEFAULT '0',
+//             driverId INTEGER DEFAULT '0',
+//             constructorId INTEGER DEFAULT '0',
+//             number INTEGER DEFAULT '0',
+//             position INTEGER DEFAULT NULL,
+//             q1 TEXT DEFAULT NULL,
+//             q2 TEXT DEFAULT NULL,
+//             q3 TEXT DEFAULT NULL,
+//             PRIMARY KEY (qualifyId)
+//         )", [],
+//     )?;
+//     println!("TABLE CREATED: qualifying");
 
-    conn.execute(
-        "CREATE TABLE IF NOT EXISTS results (
-            resultId INTEGER PRIMARY KEY,
-            raceId INTEGER DEFAULT '0',
-            driverId INTEGER DEFAULT '0',
-            constructorId INTEGER DEFAULT '0',
-            number INTEGER DEFAULT '',
-            grid INTEGER DEFAULT '0',
-            position INTEGER DEFAULT NULL,
-            positionText TEXT DEFAULT '',
-            positionOrder INTEGER DEFAULT '0',
-            points NUMBER DEFAULT '0',
-            laps INTEGER DEFAULT '0',
-            time TEXT DEFAULT NULL,
-            milliseconds INTEGER DEFAULT NULL,
-            fastestLap INTEGER DEFAULT NULL,
-            rank INTEGER DEFAULT '0',
-            fastestLapTime TEXT DEFAULT NULL,
-            fastestLapSpeed TEXT DEFAULT NULL,
-            statusId INTEGER DEFAULT '0'
-        )", [],
-    )?;
-    println!("TABLE CREATED: results");
+//     conn.execute(
+//         "CREATE TABLE IF NOT EXISTS results (
+//             resultId INTEGER PRIMARY KEY,
+//             raceId INTEGER DEFAULT '0',
+//             driverId INTEGER DEFAULT '0',
+//             constructorId INTEGER DEFAULT '0',
+//             number INTEGER DEFAULT '',
+//             grid INTEGER DEFAULT '0',
+//             position INTEGER DEFAULT NULL,
+//             positionText TEXT DEFAULT '',
+//             positionOrder INTEGER DEFAULT '0',
+//             points NUMBER DEFAULT '0',
+//             laps INTEGER DEFAULT '0',
+//             time TEXT DEFAULT NULL,
+//             milliseconds INTEGER DEFAULT NULL,
+//             fastestLap INTEGER DEFAULT NULL,
+//             rank INTEGER DEFAULT '0',
+//             fastestLapTime TEXT DEFAULT NULL,
+//             fastestLapSpeed TEXT DEFAULT NULL,
+//             statusId INTEGER DEFAULT '0'
+//         )", [],
+//     )?;
+//     println!("TABLE CREATED: results");
 
-    conn.execute(
-        "CREATE TABLE IF NOT EXISTS sprintResults (
-            sprintResultId INTEGER NOT NULL,
-            raceId INTEGER DEFAULT '0',
-            driverId INTEGER DEFAULT '0',
-            constructorId INTEGER DEFAULT '0',
-            number INTEGER DEFAULT '',
-            grid INTEGER DEFAULT '0',
-            position INTEGER DEFAULT NULL,
-            positionText TEXT DEFAULT '',
-            positionOrder INTEGER DEFAULT '0',
-            points NUMBER DEFAULT '0',
-            laps INTEGER DEFAULT '0',
-            time TEXT DEFAULT NULL,
-            milliseconds INTEGER DEFAULT NULL,
-            fastestLap INTEGER DEFAULT NULL,
-            fastestLapTime TEXT DEFAULT NULL,
-            statusId INTEGER DEFAULT '0',
-            PRIMARY KEY (sprintResultId)
-        )", [],
-    )?;
-    println!("TABLE CREATED: sprintResults");
+//     conn.execute(
+//         "CREATE TABLE IF NOT EXISTS sprintResults (
+//             sprintResultId INTEGER NOT NULL,
+//             raceId INTEGER DEFAULT '0',
+//             driverId INTEGER DEFAULT '0',
+//             constructorId INTEGER DEFAULT '0',
+//             number INTEGER DEFAULT '',
+//             grid INTEGER DEFAULT '0',
+//             position INTEGER DEFAULT NULL,
+//             positionText TEXT DEFAULT '',
+//             positionOrder INTEGER DEFAULT '0',
+//             points NUMBER DEFAULT '0',
+//             laps INTEGER DEFAULT '0',
+//             time TEXT DEFAULT NULL,
+//             milliseconds INTEGER DEFAULT NULL,
+//             fastestLap INTEGER DEFAULT NULL,
+//             fastestLapTime TEXT DEFAULT NULL,
+//             statusId INTEGER DEFAULT '0',
+//             PRIMARY KEY (sprintResultId)
+//         )", [],
+//     )?;
+//     println!("TABLE CREATED: sprintResults");
     
-    conn.execute(
-        "CREATE TABLE IF NOT EXISTS drivers (
-            driverId INTEGER PRIMARY KEY,
-            driverRef TEXT DEFAULT '',
-            number INTEGER DEFAULT NULL,
-            code TEXT DEFAULT NULL,
-            forename TEXT DEFAULT '',
-            surename TEXT DEFAULT '',
-            dob TEXT DEFAULT NULL,
-            nationality TEXT DEFAULT NULL,
-            url TEXT DEFAULT NULL
-        )", [],
-    )?;
-    println!("TABLE CREATED: drivers");
+//     conn.execute(
+//         "CREATE TABLE IF NOT EXISTS drivers (
+//             driverId INTEGER PRIMARY KEY,
+//             driverRef TEXT DEFAULT '',
+//             number INTEGER DEFAULT NULL,
+//             code TEXT DEFAULT NULL,
+//             forename TEXT DEFAULT '',
+//             surename TEXT DEFAULT '',
+//             dob TEXT DEFAULT NULL,
+//             nationality TEXT DEFAULT NULL,
+//             url TEXT DEFAULT NULL
+//         )", [],
+//     )?;
+//     println!("TABLE CREATED: drivers");
 
-    conn.execute(
-        "CREATE TABLE IF NOT EXISTS driverStandings (
-            driverStandingsId INTEGER PRIMARY KEY,
-            raceId INTEGER DEFAULT '0',
-            driverId INTEGER DEFAULT '0',
-            points NUMBER DEFAULT '0',
-            position INTEGER DEFAULT '0',
-            positionText TEXT DEFAULT '',
-            wins INTEGER DEFAULT '0'
-        )", [],
-    )?;
-    println!("TABLE CREATED: driverStandings");
+//     conn.execute(
+//         "CREATE TABLE IF NOT EXISTS driverStandings (
+//             driverStandingsId INTEGER PRIMARY KEY,
+//             raceId INTEGER DEFAULT '0',
+//             driverId INTEGER DEFAULT '0',
+//             points NUMBER DEFAULT '0',
+//             position INTEGER DEFAULT '0',
+//             positionText TEXT DEFAULT '',
+//             wins INTEGER DEFAULT '0'
+//         )", [],
+//     )?;
+//     println!("TABLE CREATED: driverStandings");
 
-    conn.execute(
-        "CREATE TABLE IF NOT EXISTS circuits (
-            circuitId INTEGER PRIMARY KEY,
-            circuitRef TEXT DEFAULT '',
-            name TEXT DEFAULT '',
-            location TEXT DEFAULT NULL,
-            country TEXT DEFAULT NULL,
-            lat TEXT DEFAULT '',
-            lng TEXT DEFAULT '',
-            alt TEXT DEFAULT NULL,
-            url TEXT DEFAULT NULL
-        )", [],
-    )?;
-    println!("TABLE CREATED: circuits");
+//     conn.execute(
+//         "CREATE TABLE IF NOT EXISTS circuits (
+//             circuitId INTEGER PRIMARY KEY,
+//             circuitRef TEXT DEFAULT '',
+//             name TEXT DEFAULT '',
+//             location TEXT DEFAULT NULL,
+//             country TEXT DEFAULT NULL,
+//             lat TEXT DEFAULT '',
+//             lng TEXT DEFAULT '',
+//             alt TEXT DEFAULT NULL,
+//             url TEXT DEFAULT NULL
+//         )", [],
+//     )?;
+//     println!("TABLE CREATED: circuits");
 
-    conn.execute(
-        "CREATE TABLE IF NOT EXISTS constructors (
-            constructorId INTEGER PRIMARY KEY,
-            constructorRef TEXT DEFAULT '',
-            name TEXT DEFAULT '',
-            nationality TEXT DEFAULT NULL,
-            url TEXT DEFAULT NULL
-        )", [],
-    )?;
-    println!("TABLE CREATED: constructors");
+//     conn.execute(
+//         "CREATE TABLE IF NOT EXISTS constructors (
+//             constructorId INTEGER PRIMARY KEY,
+//             constructorRef TEXT DEFAULT '',
+//             name TEXT DEFAULT '',
+//             nationality TEXT DEFAULT NULL,
+//             url TEXT DEFAULT NULL
+//         )", [],
+//     )?;
+//     println!("TABLE CREATED: constructors");
 
-    conn.execute(
-        "CREATE TABLE IF NOT EXISTS constructorStandings (
-            constructorStandingsId INTEGER PRIMARY KEY,
-            raceId INTEGER DEFAULT '0',
-            constructorId INTEGER DEFAULT '0',
-            points NUMBER DEFAULT '0',
-            position INTEGER DEFAULT NULL,
-            positionText TEXT DEFAULT NULL,
-            wins INTEGER DEFAULT '0'
-        )", [],
-    )?;
-    println!("TABLE CREATED: constructorStandings");
+//     conn.execute(
+//         "CREATE TABLE IF NOT EXISTS constructorStandings (
+//             constructorStandingsId INTEGER PRIMARY KEY,
+//             raceId INTEGER DEFAULT '0',
+//             constructorId INTEGER DEFAULT '0',
+//             points NUMBER DEFAULT '0',
+//             position INTEGER DEFAULT NULL,
+//             positionText TEXT DEFAULT NULL,
+//             wins INTEGER DEFAULT '0'
+//         )", [],
+//     )?;
+//     println!("TABLE CREATED: constructorStandings");
 
-    conn.execute(
-        "CREATE TABLE IF NOT EXISTS constructorResults (
-            constructorResultsId INTEGER PRIMARY KEY,
-            raceId INTEGER DEFAULT '0',
-            constructorId INTEGER DEFAULT '0',
-            points NUMBER DEFAULT NULL,
-            status TEXT DEFAULT NULL
-        )", [],
-    )?;
-    println!("TABLE CREATED: constructorResults");
+//     conn.execute(
+//         "CREATE TABLE IF NOT EXISTS constructorResults (
+//             constructorResultsId INTEGER PRIMARY KEY,
+//             raceId INTEGER DEFAULT '0',
+//             constructorId INTEGER DEFAULT '0',
+//             points NUMBER DEFAULT NULL,
+//             status TEXT DEFAULT NULL
+//         )", [],
+//     )?;
+//     println!("TABLE CREATED: constructorResults");
 
-    conn.execute(
-        "CREATE TABLE IF NOT EXISTS status (
-            statusId INTEGER,
-            status TEXT DEFAULT '',
-            PRIMARY KEY (statusId)
-        )", [],
-    )?;
-    println!("TABLE CREATED: status");
+//     conn.execute(
+//         "CREATE TABLE IF NOT EXISTS status (
+//             statusId INTEGER,
+//             status TEXT DEFAULT '',
+//             PRIMARY KEY (statusId)
+//         )", [],
+//     )?;
+//     println!("TABLE CREATED: status");
 
-    Ok(())
-}
+//     Ok(())
+// }
 
-/*
-Populating all tables with thier respective CSV if they dont match in size; Else they are already populated
-*/
-pub fn populate_tables_via_csv() -> Result<(), Box<dyn Error>>{
-    let conn: Connection = connect_to_db()?;
-    // Races
-    let sql_rows: i64 = conn.query_row("SELECT COUNT(*) FROM races", [], |row| row.get(0))?;
-    races_csv(&conn, sql_rows, String::from("data/races.csv"));
+// /*
+// Populating all tables with thier respective CSV if they dont match in size; Else they are already populated
+// */
+// pub fn populate_tables_via_csv() -> Result<(), Box<dyn Error>>{
+//     let conn: Connection = connect_to_db()?;
+//     // Races
+//     let sql_rows: i64 = conn.query_row("SELECT COUNT(*) FROM races", [], |row| row.get(0))?;
+//     races_csv(&conn, sql_rows, String::from("data/races.csv"));
 
-    // Lap Times
-    let sql_rows: i64 = conn.query_row("SELECT COUNT(*) FROM lapTimes", [], |row| row.get(0))?;
-    lap_times_csv(&conn, sql_rows, String::from("data/lap_times.csv"));
+//     // Lap Times
+//     let sql_rows: i64 = conn.query_row("SELECT COUNT(*) FROM lapTimes", [], |row| row.get(0))?;
+//     lap_times_csv(&conn, sql_rows, String::from("data/lap_times.csv"));
 
-    // Qualifying
-    let sql_rows: i64 = conn.query_row("SELECT COUNT(*) FROM qualifying", [], |row| row.get(0))?;
-    qualifying_csv(&conn, sql_rows, String::from("data/qualifying.csv"));
+//     // Qualifying
+//     let sql_rows: i64 = conn.query_row("SELECT COUNT(*) FROM qualifying", [], |row| row.get(0))?;
+//     qualifying_csv(&conn, sql_rows, String::from("data/qualifying.csv"));
 
-    // Results
-    let sql_rows: i64 = conn.query_row("SELECT COUNT(*) FROM results", [], |row| row.get(0))?;
-    results_csv(&conn, sql_rows, String::from("data/results.csv"));
+//     // Results
+//     let sql_rows: i64 = conn.query_row("SELECT COUNT(*) FROM results", [], |row| row.get(0))?;
+//     results_csv(&conn, sql_rows, String::from("data/results.csv"));
 
-    // Sprint Results
-    let sql_rows: i64 = conn.query_row("SELECT COUNT(*) FROM sprintResults", [], |row| row.get(0))?;
-    sprint_results_csv(&conn, sql_rows, String::from("data/sprint_results.csv"));
+//     // Sprint Results
+//     let sql_rows: i64 = conn.query_row("SELECT COUNT(*) FROM sprintResults", [], |row| row.get(0))?;
+//     sprint_results_csv(&conn, sql_rows, String::from("data/sprint_results.csv"));
 
-    // Drivers
-    let sql_rows: i64 = conn.query_row("SELECT COUNT(*) FROM drivers", [], |row| row.get(0))?;
-    drivers_csv(&conn, sql_rows, String::from("data/drivers.csv"));
+//     // Drivers
+//     let sql_rows: i64 = conn.query_row("SELECT COUNT(*) FROM drivers", [], |row| row.get(0))?;
+//     drivers_csv(&conn, sql_rows, String::from("data/drivers.csv"));
 
-    // Driver Standings
-    let sql_rows: i64 = conn.query_row("SELECT COUNT(*) FROM driverStandings", [], |row| row.get(0))?;
-    driver_standings_csv(&conn, sql_rows, String::from("data/driver_standings.csv"));
+//     // Driver Standings
+//     let sql_rows: i64 = conn.query_row("SELECT COUNT(*) FROM driverStandings", [], |row| row.get(0))?;
+//     driver_standings_csv(&conn, sql_rows, String::from("data/driver_standings.csv"));
 
-    // Constructors
-    let sql_rows: i64 = conn.query_row("SELECT COUNT(*) FROM constructors", [], |row| row.get(0))?;
-    constructors_csv(&conn, sql_rows, String::from("data/constructors.csv"));
+//     // Constructors
+//     let sql_rows: i64 = conn.query_row("SELECT COUNT(*) FROM constructors", [], |row| row.get(0))?;
+//     constructors_csv(&conn, sql_rows, String::from("data/constructors.csv"));
 
-    // Constructor Standings
-    let sql_rows: i64 = conn.query_row("SELECT COUNT(*) FROM constructorStandings", [], |row| row.get(0))?;
-    constructor_standings_csv(&conn, sql_rows, String::from("data/constructor_standings.csv"));
+//     // Constructor Standings
+//     let sql_rows: i64 = conn.query_row("SELECT COUNT(*) FROM constructorStandings", [], |row| row.get(0))?;
+//     constructor_standings_csv(&conn, sql_rows, String::from("data/constructor_standings.csv"));
 
-    // Constructor Results
-    let sql_rows: i64 = conn.query_row("SELECT COUNT(*) FROM constructorResults", [], |row| row.get(0))?;
-    constructor_results_csv(&conn, sql_rows, String::from("data/constructor_results.csv"));
+//     // Constructor Results
+//     let sql_rows: i64 = conn.query_row("SELECT COUNT(*) FROM constructorResults", [], |row| row.get(0))?;
+//     constructor_results_csv(&conn, sql_rows, String::from("data/constructor_results.csv"));
 
-    // Circuits
-    let sql_rows: i64 = conn.query_row("SELECT COUNT(*) FROM circuits", [], |row| row.get(0))?;
-    circuits_csv(&conn, sql_rows, String::from("data/circuits.csv"));
+//     // Circuits
+//     let sql_rows: i64 = conn.query_row("SELECT COUNT(*) FROM circuits", [], |row| row.get(0))?;
+//     circuits_csv(&conn, sql_rows, String::from("data/circuits.csv"));
 
-    // Status
-    let sql_rows: i64 = conn.query_row("SELECT COUNT(*) FROM status", [], |row| row.get(0))?;
-    status_csv(&conn, sql_rows, String::from("data/status.csv"));
+//     // Status
+//     let sql_rows: i64 = conn.query_row("SELECT COUNT(*) FROM status", [], |row| row.get(0))?;
+//     status_csv(&conn, sql_rows, String::from("data/status.csv"));
 
-    Ok(())
-}
+//     Ok(())
+// }
 
 /*
 Reads the races.csv and populates the races table with all rows
@@ -916,8 +923,7 @@ fn status_csv(conn: &Connection, sql_rows: i64, filepath: String) {
 Query all races of a given year into Races Objects
 @return: vector of Races
 */
-pub fn get_races(year: String) -> Result<Vec<Races>, Box<dyn Error>> {
-    let conn: Connection = connect_to_db()?;
+pub fn get_races(year: String, conn: &Connection) -> Result<Vec<Races>, Box<dyn Error>> {
     let mut races_statement = conn.prepare("SELECT * FROM races WHERE year = ?1")?;
     let mut rows = races_statement.query([year])?;
     let mut races: Vec<Races> = Vec::new();
@@ -976,9 +982,8 @@ pub fn get_races(year: String) -> Result<Vec<Races>, Box<dyn Error>> {
 Given the driver_id, query the table drivers for that drivers information.
 @returns: Object of the driver
 */
-pub fn get_driver(driver_id: String) -> Result<Driver, rusqlite::Error> {
+pub fn get_driver(driver_id: String, conn: &Connection) -> Result<Driver, rusqlite::Error> {
     // Connect to f1_db and get the driver from the table drivers where driver_id
-    let conn: Connection = connect_to_db().expect("ERROR: Unable to connect to database");
     let mut driver_statement = conn.prepare("SELECT * FROM drivers WHERE driver_id = ?1")?;
     let mut rows = driver_statement.query([driver_id])?;
 
@@ -1016,9 +1021,8 @@ pub fn get_driver(driver_id: String) -> Result<Driver, rusqlite::Error> {
 Given the circuit_id, query the table circuits for that circuit information.
 @returns: Object of the driver
 */
-pub fn get_circuit(circuit_id: String) -> Result<Circuit, rusqlite::Error> {
+pub fn get_circuit(circuit_id: String, conn: &Connection) -> Result<Circuit, rusqlite::Error> {
     // Connect to f1_db and get the driver from the table drivers where driver_id
-    let conn: Connection = connect_to_db().expect("ERROR: Unable to connect to database");
     let mut driver_statement = conn.prepare("SELECT * FROM circuits WHERE circuit_id = ?1")?;
     let mut rows = driver_statement.query([circuit_id])?;
 
@@ -1082,8 +1086,7 @@ pub struct NextEvent {
     country_code: String,
 }
 
-pub fn home_page_next_event() -> Result<NextEvent, rusqlite::Error>{
-    let conn: Connection = connect_to_db().expect("ERROR: Unable to connect to database");
+pub fn home_page_next_event(conn: &Connection) -> Result<NextEvent, rusqlite::Error>{
     let mut stmt = conn.prepare(
         "SELECT 
         r.raceId, r.round, r.circuitId, 
@@ -1199,8 +1202,7 @@ pub fn home_page_next_event() -> Result<NextEvent, rusqlite::Error>{
 Information Needed:
 *   DriverId, Poitns, Position, Wins, Forename, Surename, Nationality
 */
-pub fn home_page_driver_standings() -> Result<Vec<DriverStanding>, rusqlite::Error> {
-    let conn: Connection = connect_to_db().expect("ERROR: Unable to connect to database");
+pub fn home_page_driver_standings(conn: &Connection) -> Result<Vec<DriverStanding>, rusqlite::Error> {
     let mut stmt = conn.prepare(
         "SELECT ds.driverId, ds.points, ds.position, ds.wins, drivers.forename, drivers.surename, drivers.nationality
         FROM driverStandings as ds
@@ -1246,8 +1248,7 @@ pub fn home_page_driver_standings() -> Result<Vec<DriverStanding>, rusqlite::Err
 Information Needed:
 *   ConstructorId, Poitns, Position, Wins, Name, Nationality
 */
-pub fn home_page_constructor_standings() -> Result<Vec<ConstructorStanding>, rusqlite::Error> {
-    let conn: Connection = connect_to_db().expect("ERROR: Unable to connect to database");
+pub fn home_page_constructor_standings(conn: &Connection) -> Result<Vec<ConstructorStanding>, rusqlite::Error> {
     let mut stmt = conn.prepare(
         "SELECT cs.constructorId, cs.points, cs.position, cs.wins, constructors.name, constructors.nationality
         FROM constructorStandings as cs
