@@ -50,19 +50,6 @@ pub struct Driver {
 
 #[derive(Debug)]
 #[derive(Serialize)]
-pub struct DriverStanding {
-    driver_id: i64,
-    points: i64,
-    position: i64,
-    wins: i64,
-    forename: String,
-    surename: String,
-    nationality: String,
-    country_code: String,
-}
-
-#[derive(Debug)]
-#[derive(Serialize)]
 pub struct ConstructorStanding {
     constructor_id: i64,
     points: i64,
@@ -1195,6 +1182,20 @@ pub fn home_page_next_event(conn: &Connection) -> Result<NextEvent, rusqlite::Er
     next_event.ok_or_else(|| rusqlite::Error::QueryReturnedNoRows)
 }
 
+
+#[derive(Debug)]
+#[derive(Serialize)]
+pub struct DriverStanding {
+    driver_id: i64,
+    points: i64,
+    position: i64,
+    wins: i64,
+    forename: String,
+    surename: String,
+    nationality: String,
+    driver_ref: String,
+    country_code: String,
+}
 /*
 @return: A Ascending DriverStanding Vector for the homepage
 Information Needed:
@@ -1202,7 +1203,7 @@ Information Needed:
 */
 pub fn home_page_driver_standings(conn: &Connection) -> Result<Vec<DriverStanding>, rusqlite::Error> {
     let mut stmt = conn.prepare(
-        "SELECT ds.driverId, ds.points, ds.position, ds.wins, drivers.forename, drivers.surename, drivers.nationality
+        "SELECT ds.driverId, ds.points, ds.position, ds.wins, drivers.forename, drivers.surename, drivers.nationality, driver.driverRef
         FROM driverStandings as ds
         JOIN drivers ON ds.driverId = drivers.driverId
         WHERE ds.raceId = (
@@ -1223,6 +1224,7 @@ pub fn home_page_driver_standings(conn: &Connection) -> Result<Vec<DriverStandin
         let forename: String = row.get(4)?;
         let surename: String = row.get(5)?;
         let nationality: String =  row.get(6)?;
+        let driver_ref: String =  row.get(7)?;
         let country_code: String = get_country_code_nationality(nationality.clone());
 
         let driver: DriverStanding = DriverStanding {
@@ -1233,6 +1235,7 @@ pub fn home_page_driver_standings(conn: &Connection) -> Result<Vec<DriverStandin
             forename: forename,
             surename: surename,
             nationality: nationality,
+            driver_ref: driver_ref,
             country_code: country_code
         };
         driver_standings.push(driver);
