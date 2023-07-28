@@ -1,6 +1,6 @@
 import Flag from "react-world-flags";
 import { useRouter } from "next/navigation";
-import formatDate from "../hooks/dateFormatter";
+import { formatDate } from "../hooks/dateFormatter";
 import { RaceBlockTypes } from "../interfaces/interfaces";
 
 export default function RaceBLock({ circuitName, winner, date, flagcode, time }: RaceBlockTypes) {
