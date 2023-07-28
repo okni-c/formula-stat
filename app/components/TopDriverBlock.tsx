@@ -1,19 +1,11 @@
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import Flag from "react-world-flags";
+import { TopDriverBlockTypes } from "../interfaces/interfaces";
 
 const cssObject: any = [{'1': 'dark:from-yellow-500 dark:to-black from-yellow-300 to-white'}, {'2': 'dark:from-zinc-500 dark:to-black from-zinc-400 to-white'}, {'3': 'dark:from-amber-800 dark:to-black from-amber-600 to-white'}];
 
-interface TopDriverBlockProps {
-    countryCode: string;
-    forename: string;
-    surename: string;
-    points: string;
-    position: string;
-    driverId: string;
-  }
-
-export default function TopDriverBlock({ countryCode, forename, surename, points, position, driverId }: TopDriverBlockProps) {
+export default function TopDriverBlock({ countryCode, forename, surename, points, position, driverId }: TopDriverBlockTypes) {
     const [gradient, setGradient] = useState<string>('');
     const router = useRouter();
     

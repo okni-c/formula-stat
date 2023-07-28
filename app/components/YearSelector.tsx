@@ -1,11 +1,7 @@
 "use client"
 
-// import { AnimatePresence, motion } from "framer-motion";
-// motion.div
-//                     key="YearSelector"
-//                     initial={{ x: -100 }}
-//                     animate={{ x: 0 }}
-//                     exit={{ x: -100 }}
+import { AnimatePresence, motion } from "framer-motion";
+
 import Link from "next/link";
 import { usePathname } from 'next/navigation'
 
@@ -16,21 +12,27 @@ export default function YearSelector() {
 
     return (
         <>
-            {pathname.startsWith('/races') &&
-                <nav className="z-[1] w-full max-w-[7rem] h-screen bg-black bg-opacity-20 shadow-lg fixed left-36">
-                    <div className="flex flex-col justify-start h-[100%]">
+            <AnimatePresence>
+                {pathname.startsWith('/races') &&
+                    <motion.nav className="z-[1] w-full max-w-[7rem] h-screen bg-black bg-opacity-20 shadow-lg fixed left-36"
+                        key="YearSelector"
+                        initial={{ x: -100 }}
+                        animate={{ x: 0 }}
+                        exit={{ x: -100 }}>
+                        <div className="flex flex-col justify-start h-[100%]">
 
-                        <Link href="/races" className="hover:dark:bg-zinc-300 rounded-lg hover:bg-zinc-200 hover:text-black dark:text-white text-black text-lg my-6 py-2 px-5 duration-150 ease-in-out self-center"><span className={pathname === ('/races') ? 'font-black' : ''}>2023</span></Link>
+                            <Link href="/races" className="hover:dark:bg-zinc-300 rounded-lg hover:bg-zinc-200 hover:text-black dark:text-white text-black text-lg my-6 py-2 px-5 duration-150 ease-in-out self-center"><span className={pathname === ('/races') ? 'font-black' : ''}>2023</span></Link>
 
-                        <hr className="h-1 opacity-10 bg-zinc-300 mb-2" />
+                            <hr className="h-1 opacity-10 bg-zinc-300 mb-2" />
 
-                        {year && year.map((year: any) =>
+                            {year && year.map((year: any) =>
 
-                            <Link key={year.year} href={'/races/' + year.year} className="hover:dark:bg-zinc-300 rounded-lg hover:bg-zinc-200 hover:text-black dark:text-white text-black text-lg my-1 py-1 px-5 duration-150 ease-in-out self-center"><span className={pathname.startsWith('/races/' + year.year) ? 'font-black' : ''}>{year.year}</span></Link>
-                        )}
-                    </div>
-                </nav>
-            }
+                                <Link key={year.year} href={'/races/' + year.year} className="hover:dark:bg-zinc-300 rounded-lg hover:bg-zinc-200 hover:text-black dark:text-white text-black text-lg my-1 py-1 px-5 duration-150 ease-in-out self-center"><span className={pathname.startsWith('/races/' + year.year) ? 'font-black' : ''}>{year.year}</span></Link>
+                            )}
+                        </div>
+                    </motion.nav>
+                }
+            </AnimatePresence>
         </>
     );
 }

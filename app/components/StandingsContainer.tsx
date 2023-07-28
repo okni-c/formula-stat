@@ -1,7 +1,4 @@
-interface ContainerTypes {
-    title: string,
-    children: any,
-  }
+import { ContainerTypes } from "../interfaces/interfaces"
 
 export default function StandingsContainer({ title, children }: ContainerTypes) {
 

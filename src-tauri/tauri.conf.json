@@ -47,7 +47,6 @@
         "timestampUrl": ""
       }
     },
-    
     "security": {
       "csp": null
     },
@@ -57,10 +56,14 @@
     "windows": [
       {
         "fullscreen": false,
-        "height": 600,
+        "width": 1001,
+        "height": 800,
+        "minWidth": 1000,
+        "minHeight": 500,
         "resizable": true,
-        "title": "FormulaStat",
-        "width": 800
+        "visible": true,
+        "center": true,
+        "decorations": true
       }
     ]
   }

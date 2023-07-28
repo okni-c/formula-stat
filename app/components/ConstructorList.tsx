@@ -1,20 +1,10 @@
-import { fetchDriverStandings } from "../fetchers/fetchDriverStandings";
 import { useQuery } from '@tanstack/react-query';
 import ConstructorBlock from "./ConstructorBlock";
 import { fetchConstructorStandings } from "../fetchers/fetchConstructorStandings";
-
-interface ConstructorTypes {
-    constructor_id: string,
-    points: string,
-    position: string,
-    wins: string,
-    name: string,
-    nationality: string,
-    country_code: string,
-}
+import { ConstructorTypes } from '../interfaces/interfaces';
 
 export default function ConstructorList() {
-    const { data, isLoading, isError } = useQuery<any>({ queryKey: ['constructorStandings'], queryFn: fetchConstructorStandings });
+    const { data, isLoading, isError, isSuccess } = useQuery<any>({ queryKey: ['constructorStandings'], queryFn: fetchConstructorStandings });
 
     if (isLoading) {
         return <div>Loading...</div>;
@@ -38,8 +28,9 @@ export default function ConstructorList() {
                     driverId={data.constructor_id}
                 />
             ));
-
-    return (
-        <ConstructorLoop />
-    )
+    if (isSuccess) {
+        return (
+            <ConstructorLoop />
+        )
+    }
 }

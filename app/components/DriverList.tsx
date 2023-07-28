@@ -2,20 +2,10 @@ import { fetchDriverStandings } from "../fetchers/fetchDriverStandings";
 import { useQuery } from '@tanstack/react-query';
 import DriverBlock from "./DriverBlock";
 import TopDriverBlock from "./TopDriverBlock";
-
-interface DriverTypes {
-    driver_id: string,
-    points: string,
-    position: string,
-    wins: string,
-    forename: string,
-    surename: string,
-    nationality: string,
-    country_code: string,
-}
+import { DriverTypes } from "../interfaces/interfaces";
 
 export default function DriverList() {
-    const { data, isLoading, isError } = useQuery<any>({ queryKey: ['driverStandings'], queryFn: fetchDriverStandings });
+    const { data, isLoading, isError, isSuccess } = useQuery<any>({ queryKey: ['driverStandings'], queryFn: fetchDriverStandings });
 
     if (isLoading) {
         return <div>Loading...</div>;
@@ -26,29 +16,52 @@ export default function DriverList() {
     }
 
     const TopDriverLoop = () => {
-        return (
-            <div className="flex flex-row justify-center gap-5">
-                {data && data
-                    .slice(0, 3)
-                    .map((data: DriverTypes) =>
-                        <TopDriverBlock key={data.driver_id} countryCode={data.country_code} forename={data.forename} surename={data.surename} points={data.points} position={data.position} driverId={data.driver_id} />
-                    )}
-            </div>
-        )
+        if (data) {
+            return (
+                <>
+                    <div className="flex flex-row justify-center gap-5">
+                        {data && data
+                            .slice(1, 2)
+                            .map((data: DriverTypes) =>
+                                <TopDriverBlock key={data.driver_id} countryCode={data.country_code} forename={data.forename} surename={data.surename} points={data.points} position={data.position} driverId={data.driver_id} />
+                            )}
+                        {data && data
+                            .slice(0, 1)
+                            .map((data: DriverTypes) =>
+                                <TopDriverBlock key={data.driver_id} countryCode={data.country_code} forename={data.forename} surename={data.surename} points={data.points} position={data.position} driverId={data.driver_id} />
+                            )}
+                        {data && data
+                            .slice(2, 3)
+                            .map((data: DriverTypes) =>
+                                <TopDriverBlock key={data.driver_id} countryCode={data.country_code} forename={data.forename} surename={data.surename} points={data.points} position={data.position} driverId={data.driver_id} />
+                            )}
+                    </div>
+                </>
+            )
+        }
     }
 
-    const DriverLoop = () =>
-        data &&
-        data
-            .slice(3, 10)
-            .map((data: DriverTypes) =>
-                <DriverBlock key={data.driver_id} countryCode={data.country_code} forename={data.forename} surename={data.surename} points={data.points} position={data.position} driverId={data.driver_id} />
+    const DriverLoop = () => {
+        if (data) {
+            return (
+                <>
+                    {data &&
+                        data
+                            .slice(3, 10)
+                            .map((data: DriverTypes) =>
+                                <DriverBlock key={data.driver_id} countryCode={data.country_code} forename={data.forename} surename={data.surename} points={data.points} position={data.position} driverId={data.driver_id} />
+                            )}
+                </>
             )
+        }
+    }
 
-    return (
-        <>
-            <TopDriverLoop />
-            <DriverLoop />
-        </>
-    )
+    if (isSuccess) {
+        return (
+            <>
+                <TopDriverLoop />
+                <DriverLoop />
+            </>
+        )
+    }
 }

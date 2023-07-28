@@ -1,10 +1,6 @@
 import { useEffect, useState } from "react";
-
-interface NextEventDropDownBlockTypes {
-    circuitName: string,
-    date: string,
-    time: string,
-}
+import { NextEventDropDownBlockTypes } from "../interfaces/interfaces";
+import { formatDate } from "../hooks/dateFormatter";
 
 export default function NextEventDropDownBlock({ circuitName, date, time }: NextEventDropDownBlockTypes) {
     const [sTime, setSTime] = useState('');
@@ -12,21 +8,9 @@ export default function NextEventDropDownBlock({ circuitName, date, time }: Next
     const [sDate, setSDate] = useState('');
 
     useEffect(() => {
-        const dateObject = new Date(date + 'T' + time);
-
-        // Format options for date and time
-        const dateFormatOptions: any = { month: 'long', day: 'numeric', year: 'numeric' };
-        const timeFormatOptions: any = { hour: 'numeric', minute: 'numeric' };
-        const dayFormatOptions: any = { weekday: 'long' };
-
-        // Format date and time separately using the local time
-        const formattedDate = dateObject.toLocaleDateString(undefined, dateFormatOptions);
-        const formattedTime = dateObject.toLocaleTimeString(undefined, timeFormatOptions);
-        const formattedDay = dateObject.toLocaleDateString(undefined, dayFormatOptions);
-
-        setSTime(formattedTime);
-        setSDate(formattedDate);
-        setSDay(formattedDay);
+        setSTime(formatDate(date, time, "time"));
+        setSDate(formatDate(date, time));
+        setSDay(formatDate(date, time, "day"));
     }, [date, time])
 
     return (

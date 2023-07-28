@@ -1,7 +1,4 @@
-interface ListTypes {
-  title: string,
-  children: any,
-}
+import { ListTypes } from "../interfaces/interfaces";
 
 export default function ListBLock({ children, title }: ListTypes) {
     return (
