@@ -16,7 +16,7 @@ export default function RolexClock() {
 
     return (
         <div className='relative'>
-            <Clock className="bg-white rounded-full text-[0.50rem]" size={'80px'} value={value} renderNumbers={true} />
+            <Clock className="bg-white rounded-full text-[0.55rem]" size={'80px'} value={value} renderNumbers={true} />
         </div>
     )
 }

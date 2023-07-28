@@ -1,0 +1,67 @@
+import { fetchDriverStandings } from "../fetchers/fetchDriverStandings";
+import { useQuery } from '@tanstack/react-query';
+import DriverBlock from "./DriverBlock";
+import TopDriverBlock from "./TopDriverBlock";
+import { DriverTypes } from "../interfaces/interfaces";
+
+export default function DriverList() {
+    const { data, isLoading, isError, isSuccess } = useQuery<any>({ queryKey: ['driverStandings'], queryFn: fetchDriverStandings });
+
+    if (isLoading) {
+        return <div>Loading...</div>;
+    }
+
+    if (isError) {
+        return <div>Error occurred while fetching data.</div>;
+    }
+
+    const TopDriverLoop = () => {
+        if (data) {
+            return (
+                <>
+                    <div className="flex flex-row justify-center gap-5">
+                        {data && data
+                            .slice(1, 2)
+                            .map((data: DriverTypes) =>
+                                <TopDriverBlock key={data.driver_id} countryCode={data.country_code} forename={data.forename} surename={data.surename} points={data.points} position={data.position} driverId={data.driver_id} />
+                            )}
+                        {data && data
+                            .slice(0, 1)
+                            .map((data: DriverTypes) =>
+                                <TopDriverBlock key={data.driver_id} countryCode={data.country_code} forename={data.forename} surename={data.surename} points={data.points} position={data.position} driverId={data.driver_id} />
+                            )}
+                        {data && data
+                            .slice(2, 3)
+                            .map((data: DriverTypes) =>
+                                <TopDriverBlock key={data.driver_id} countryCode={data.country_code} forename={data.forename} surename={data.surename} points={data.points} position={data.position} driverId={data.driver_id} />
+                            )}
+                    </div>
+                </>
+            )
+        }
+    }
+
+    const DriverLoop = () => {
+        if (data) {
+            return (
+                <>
+                    {data &&
+                        data
+                            .slice(3, 10)
+                            .map((data: DriverTypes) =>
+                                <DriverBlock key={data.driver_id} countryCode={data.country_code} forename={data.forename} surename={data.surename} points={data.points} position={data.position} driverId={data.driver_id} />
+                            )}
+                </>
+            )
+        }
+    }
+
+    if (isSuccess) {
+        return (
+            <>
+                <TopDriverLoop />
+                <DriverLoop />
+            </>
+        )
+    }
+}
