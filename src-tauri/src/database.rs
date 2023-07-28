@@ -7,7 +7,6 @@ use std::fs;
 
 use crate::func::{get_country_code_country, get_country_code_nationality, set_to_null_if_n, to_datetime, parse_datetime, to_utc, file_exists};
 
-
 #[derive(Debug)]
 #[derive(Serialize)]
 pub struct Races {
@@ -78,30 +77,12 @@ pub struct Circuit {
 Establish a Connection to the f1_db and return that connection
 */
 pub fn connect_to_db(app_handle: &AppHandle) -> Result<Connection, rusqlite::Error> {
-    // let app_dir = app_handle.path_resolver().app_data_dir().expect("The app data directory should exist.");
-    // fs::create_dir_all(&app_dir).expect("The app data directory should be created.");
-    // let sqlite_path = app_dir.join("f1.db");
-    // println!("{:?}",sqlite_path);
-
-    // DEBUGGING
-    let sqlite_path = String::from("data/f1.db");
+    let sqlite_path = app_handle.path_resolver().resolve_resource("data/f1.db").expect("ERROR: Unable to access data/f1.db");
+    println!("{:?}",sqlite_path);
     let conn = Connection::open(sqlite_path)?;
 
-    init_db(&conn)?;
-
+    println!("Connected to F1.db");
     Ok(conn)
-}
-
-
-fn init_db(conn: &Connection) -> Result<(), rusqlite::Error> {
-    let sql = fs::read_to_string("data/f1.sql").expect("ERROR: Unable to load f1.sql");
-    for statement in sql.split(";") {
-        if !statement.trim().is_empty(){
-            conn.execute_batch(statement)?;
-        }
-    }
-
-    Ok(())
 }
 
 /*
@@ -294,25 +275,32 @@ pub fn home_page_next_event(conn: &Connection) -> Result<NextEvent, rusqlite::Er
         let race_id: i64 = row.get(0)?;
         let round: i64 = row.get(1)?;
         let circuit_id: i64 = row.get(2)?;
+
         let grand_prix_name: String = row.get(3)?;
         let grand_prix_date: String = row.get(4)?;
         let mut grand_prix_time: String = row.get(5)?;
         grand_prix_time = to_utc(grand_prix_time.as_str());
+
         let fp1_date: String = row.get(6)?;
         let mut fp1_time: String = row.get(7)?;
         fp1_time = to_utc(fp1_time.as_str());
+
         let fp2_date: String = row.get(8)?;
         let mut fp2_time: String = row.get(9)?;
         fp2_time = to_utc(fp2_time.as_str());
+
         let fp3_date: String = row.get(10)?;
         let mut fp3_time: String = row.get(11)?;
         fp3_time = to_utc(fp3_time.as_str());
+
         let sprint_date: String = row.get(12)?;
         let mut sprint_time: String = row.get(13)?;
         sprint_time = to_utc(sprint_time.as_str());
+
         let quali_date: String = row.get(14)?;
         let mut quali_time: String = row.get(15)?;
         quali_time = to_utc(quali_time.as_str());
+
         let country: String = row.get(16)?;
         let location: String = row.get(17)?;
         let country_code: String = get_country_code_country(country.clone());

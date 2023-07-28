@@ -121,7 +121,7 @@ pub fn set_to_null_if_n(temp: String) -> String {
 }
 
 pub fn to_datetime(date_str: String, time_str: String) -> String {
-    if date_str == "\\N" {
+    if date_str == "NULL" {
         return String::from("None")
     }
     if let Ok(date) = parse_date(&date_str){
@@ -154,7 +154,7 @@ pub fn parse_datetime(datetime_str: &str) -> NaiveDateTime {
 }
 
 pub fn to_utc(time_str: &str) -> String {
-    if time_str == "\\N"{
+    if time_str == "NULL"{
         return String::from("None")
     }
     let mut time: NaiveTime = NaiveTime::parse_from_str(time_str, "%H:%M:%S").unwrap();

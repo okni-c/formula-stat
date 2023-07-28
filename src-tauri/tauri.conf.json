@@ -38,7 +38,9 @@
         "providerShortName": null,
         "signingIdentity": null
       },
-      "resources": [],
+      "resources": [
+        "data/f1.db"
+      ],
       "shortDescription": "",
       "targets": "all",
       "windows": {
