@@ -5,7 +5,7 @@
  * @param string option - 'day', 'time', or null for full date
  */
 
-export function formatDate(dateString: string, timeString: string, option?: string | undefined): string {
+export default function formatDate(dateString: string, timeString: string, option?: string | undefined): string {
     const dateTimeString = dateString + 'T' + timeString;
     const dateObject = new Date(dateTimeString);
 
