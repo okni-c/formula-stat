@@ -2,7 +2,6 @@
 #![cfg_attr(not(debug_assertions), windows_subsystem = "windows")]
 
 use std::error::Error;
-use rusqlite::Connection;
 use tauri::{State, Manager, AppHandle};
 mod state;
 use state::{DbState, DatabaseAccess};

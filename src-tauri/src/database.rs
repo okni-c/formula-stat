@@ -3,9 +3,8 @@ use tauri::AppHandle;
 use std::{error::Error, vec};
 use serde::Serialize;
 use chrono::Duration;
-use std::fs;
 
-use crate::func::{get_country_code_country, get_country_code_nationality, set_to_null_if_n, to_datetime, parse_datetime, to_utc, file_exists};
+use crate::func::{get_country_code_country, get_country_code_nationality, set_to_null_if_n, to_datetime, parse_datetime, to_utc};
 
 #[derive(Debug)]
 #[derive(Serialize)]
@@ -391,7 +390,7 @@ Information Needed:
 */
 pub fn home_page_driver_standings(conn: &Connection) -> Result<Vec<DriverStanding>, rusqlite::Error> {
     let mut stmt = conn.prepare(
-        "SELECT ds.driverId, ds.points, ds.position, ds.wins, drivers.forename, drivers.surename, drivers.nationality, driver.driverRef
+        "SELECT ds.driverId, ds.points, ds.position, ds.wins, drivers.forename, drivers.surename, drivers.nationality, drivers.driverRef
         FROM driverStandings as ds
         JOIN drivers ON ds.driverId = drivers.driverId
         WHERE ds.raceId = (

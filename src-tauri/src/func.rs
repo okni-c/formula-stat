@@ -1,7 +1,5 @@
 use std::collections::HashMap;
 use chrono::{NaiveDate, NaiveDateTime, NaiveTime};
-use std::fs::File;
-use std::path::PathBuf;
 
 /*
 Given a Country, returns the countrys code for Next.js
@@ -160,11 +158,4 @@ pub fn to_utc(time_str: &str) -> String {
     let mut time: NaiveTime = NaiveTime::parse_from_str(time_str, "%H:%M:%S").unwrap();
     time = time + chrono::Duration::hours(1);
     return time.to_string()
-}
-
-pub fn file_exists(file_path: &PathBuf) -> bool {
-    match File::open(file_path) {
-        Ok(_) => true,
-        Err(_) => false,
-    }
 }
