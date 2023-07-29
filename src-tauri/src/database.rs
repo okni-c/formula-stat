@@ -48,18 +48,6 @@ pub struct Driver {
 
 #[derive(Debug)]
 #[derive(Serialize)]
-pub struct ConstructorStanding {
-    constructor_id: i64,
-    points: i64,
-    position: i64,
-    wins: i64,
-    name: String,
-    nationality: String,
-    country_code: String,
-}
-
-#[derive(Debug)]
-#[derive(Serialize)]
 pub struct Circuit {
     circuit_id: i64,
     circuit_ref: String,
@@ -431,6 +419,18 @@ pub fn home_page_driver_standings(conn: &Connection) -> Result<Vec<DriverStandin
     Ok(driver_standings)
 }
 
+#[derive(Debug)]
+#[derive(Serialize)]
+pub struct ConstructorStanding {
+    constructor_id: i64,
+    points: i64,
+    position: i64,
+    wins: i64,
+    name: String,
+    nationality: String,
+    constructor_ref: String,
+    country_code: String,
+}
 /*
 @return: A Ascending ConstructorStanding Vector for the homepage
 Information Needed:
@@ -438,7 +438,7 @@ Information Needed:
 */
 pub fn home_page_constructor_standings(conn: &Connection) -> Result<Vec<ConstructorStanding>, rusqlite::Error> {
     let mut stmt = conn.prepare(
-        "SELECT cs.constructorId, cs.points, cs.position, cs.wins, constructors.name, constructors.nationality
+        "SELECT cs.constructorId, cs.points, cs.position, cs.wins, constructors.name, constructors.nationality, constructors.constructorRef
         FROM constructorStandings as cs
         JOIN constructors ON cs.constructorId = constructors.constructorId
         WHERE cs.raceId = (
@@ -458,6 +458,7 @@ pub fn home_page_constructor_standings(conn: &Connection) -> Result<Vec<Construc
         let wins: i64 =  row.get(3)?;
         let name: String = row.get(4)?;
         let nationality: String =  row.get(5)?;
+        let constructor_ref: String = row.get(6)?;
         let country_code: String = get_country_code_nationality(nationality.clone());
 
         let constructor: ConstructorStanding = ConstructorStanding {
@@ -467,6 +468,7 @@ pub fn home_page_constructor_standings(conn: &Connection) -> Result<Vec<Construc
             wins: wins,
             name: name,
             nationality: nationality,
+            constructor_ref: constructor_ref,
             country_code: country_code
         };
         constructor_standings.push(constructor);
