@@ -17,7 +17,6 @@ export default function DriverList() {
 
     const TopDriverLoop = () => {
         if (data) {
-            console.log(data);
             return (
                 <>
                     <div className="flex flex-row justify-center gap-5">

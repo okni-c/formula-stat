@@ -18,7 +18,7 @@ export default function StandingsContainer({ title, children, dropDown }: Contai
             <p className="bg-clip-text text-3xl text-transparent font-black bg-gradient-to-b dark:from-white dark:to-neutral-400 from-black to-neutral-700 pb-4 pl-3">{title}</p>
             {children}
             {dropDown &&
-                <button className="bottom-0 left-0 absolute z-20 dark:text-neutral-300 dark:hover:text-white text-neutral-800 hover:text-black dark:bg-black bg-white hover:bg-neutral-100 w-full py-4 dark:hover:bg-neutral-900 duration-75 ease-linear rounded-br-3xl rounded-bl-3xl text-sm font-light" onClick={() => animate === '750px' ? isAnimate('1200px') : isAnimate('750px')}>{animate === '750px' ? 'View more' : 'View less'}</button>
+                <button className="bottom-0 left-0 absolute z-20 dark:text-neutral-300 dark:hover:text-white text-neutral-800 hover:text-black dark:bg-black bg-white hover:bg-neutral-100 w-full py-4 dark:hover:bg-neutral-900 duration-75 ease-linear rounded-br-3xl rounded-bl-3xl text-sm font-bold" onClick={() => animate === '750px' ? isAnimate('1200px') : isAnimate('750px')}>{animate === '750px' ? 'View more' : 'View less'}</button>
             }
         </motion.section>
     )

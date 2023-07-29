@@ -5,11 +5,12 @@ import RolexClock from './RolexClock/RolexClock';
 import { formatDateTime } from '../hooks/dateFormatter';
 import { useState } from 'react';
 import NextEventDropDown from './NextEventDropDown';
-import { AnimatePresence, motion } from 'framer-motion';
+import { motion } from 'framer-motion';
 import { EventTypes } from '../interfaces/interfaces';
 
 export default function NextEventBlock({ nextEvent }: EventTypes) {
-    const [open, setOpen] = useState<Boolean>(false);
+    const [open, setOpen] = useState<string>('105px');
+
     const Counter = () => <span className="ml-auto text-3xl bg-clip-text bg-gradient-to-b text-transparent from-red-400 to-red-800 font-black flex items-center"><div className='w-4 h-4 rounded-full bg-gradient-to-b from-red-400 to-red-800 mr-2 animate-pulse'></div>Live</span>;
 
     // Renderer callback with condition
@@ -28,8 +29,12 @@ export default function NextEventBlock({ nextEvent }: EventTypes) {
     const CountDownTimer = () => <Countdown date={Date.now() + timeLeft} renderer={renderer} />;
 
     return (
-        <section className="flex flex-col mt-14 gap-4">
-            <div className="relative flex flex-col items-center justify-center px-6 py-3 overflow-hidden font-bold rounded-3xl shadow-2xl group bg-white dark:bg-neutral-950 cursor-pointer select-none" onClick={() => { open ? setOpen(false) : setOpen(true) }}>
+        <motion.section className="flex flex-col mt-14 gap-4"
+        initial={{ height: '105px'}}
+        animate={{ height: open }}
+        exit={{ height: '105px' }}
+        transition={{ duration: 0.2 }}>
+            <div className="relative flex flex-col items-center justify-start px-6 py-3 overflow-hidden font-bold rounded-3xl shadow-2xl group bg-white dark:bg-neutral-950 cursor-pointer select-none" onClick={() => { open === '105px' ? setOpen('auto') : setOpen('105px') }}>
                 <span className="absolute z-0 inset-0 w-full h-full transition duration-300 ease-out opacity-0 bg-gradient-to-br dark:from-neutral-900 dark:via-neutral-800 dark:to-neutral-700 from-zinc-100 via-zinc-200 to-zinc-100 group-hover:opacity-40"></span>
                 <span className="absolute z-0 top-0 left-0 w-full bg-gradient-to-b from-white to-transparent opacity-5 h-1/3"></span>
                 <span className="absolute z-0 bottom-0 left-0 w-full h-1/3 bg-gradient-to-t from-white to-transparent opacity-5"></span>
@@ -47,17 +52,9 @@ export default function NextEventBlock({ nextEvent }: EventTypes) {
                 </div>
 
                 {/* Toggled Box on click */}
-                <AnimatePresence>
-                    {open &&
-                        <motion.div key="nextEventDropdown" className='w-full'
-                            initial={{ height: 0 }}
-                            animate={{ height: "auto" }}
-                            exit={{ height: 0 }}>
-                            <NextEventDropDown title='Sub Events' nextEvent={nextEvent} />
-                        </motion.div>
-                    }
-                </AnimatePresence>
+                <NextEventDropDown title='Sub Events' nextEvent={nextEvent} />
+
             </div>
-        </section>
+        </motion.section>
     );
 }
