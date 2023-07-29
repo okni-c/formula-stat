@@ -17,23 +17,24 @@ export default function DriverList() {
 
     const TopDriverLoop = () => {
         if (data) {
+            console.log(data);
             return (
                 <>
                     <div className="flex flex-row justify-center gap-5">
                         {data && data
                             .slice(1, 2)
                             .map((data: DriverTypes) =>
-                                <TopDriverBlock key={data.driver_id} countryCode={data.country_code} forename={data.forename} surename={data.surename} points={data.points} position={data.position} driverId={data.driver_id} />
+                                <TopDriverBlock key={data.driver_id} countryCode={data.country_code} forename={data.forename} surename={data.surename} points={data.points} position={data.position} driverId={data.driver_id} driverRef={data.driver_ref} />
                             )}
                         {data && data
                             .slice(0, 1)
                             .map((data: DriverTypes) =>
-                                <TopDriverBlock key={data.driver_id} countryCode={data.country_code} forename={data.forename} surename={data.surename} points={data.points} position={data.position} driverId={data.driver_id} />
+                                <TopDriverBlock key={data.driver_id} countryCode={data.country_code} forename={data.forename} surename={data.surename} points={data.points} position={data.position} driverId={data.driver_id} driverRef={data.driver_ref} />
                             )}
                         {data && data
                             .slice(2, 3)
                             .map((data: DriverTypes) =>
-                                <TopDriverBlock key={data.driver_id} countryCode={data.country_code} forename={data.forename} surename={data.surename} points={data.points} position={data.position} driverId={data.driver_id} />
+                                <TopDriverBlock key={data.driver_id} countryCode={data.country_code} forename={data.forename} surename={data.surename} points={data.points} position={data.position} driverId={data.driver_id} driverRef={data.driver_ref} />
                             )}
                     </div>
                 </>

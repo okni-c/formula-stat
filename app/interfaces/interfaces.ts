@@ -10,6 +10,7 @@ export interface ConstructorTypes {
 
 export interface DriverTypes {
     driver_id: string,
+    driver_ref: string,
     points: string,
     position: string,
     wins: string,
@@ -80,10 +81,11 @@ export interface YearlyRaceDataTypes {
 }
 
 export interface TopDriverBlockTypes {
-    countryCode: string;
-    forename: string;
-    surename: string;
-    points: string;
-    position: string;
-    driverId: string;
+    countryCode: string,
+    forename: string,
+    surename: string,
+    points: string,
+    position: number,
+    driverId: string,
+    driverRef: string,
   }
