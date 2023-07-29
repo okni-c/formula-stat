@@ -31,7 +31,7 @@ export default function Home() {
         <div>
           <HomePageHeader circuitName={nextEvent.grand_prix_name} round={nextEvent.round} removeImg={false} />
           <NextEventBlock nextEvent={nextEvent} />
-          <StandingsContainer title={'Driver Standings'}>
+          <StandingsContainer title={'Driver Standings'} dropDown={true}>
             <DriverList />
           </StandingsContainer>
           <StandingsContainer title={'Constructor Standings'}>

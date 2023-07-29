@@ -1,7 +1,7 @@
 import { useRouter } from "next/navigation";
-import Flag from "react-world-flags";
+// import Flag from "react-world-flags";
 
-export default function ConstructorBlock({ countryCode, position, constructorId, name, points }: any) {
+export default function ConstructorBlock({ countryCode, position, constructorId, constructorRef, name, points }: any) {
     const router = useRouter();
 
     return (
@@ -10,8 +10,8 @@ export default function ConstructorBlock({ countryCode, position, constructorId,
                 <div className="max-w-[8px] w-full">
                     <p className="dark:text-white text-black text-lg font-semibold">{position}</p>
                 </div>
-                <div className="w-10 h-7 drop-shadow-md flex justify-center">
-                    <Flag code={countryCode} className="rounded-sm object-cover" />
+                <div className="w-16 h-10 drop-shadow-md flex justify-center">
+                    <img className='object-cover' src={'/constructors/' + constructorRef + '_logo.png'} />
                 </div>
             </div>
             <div className="flex items-center min-w-[160px] justify-start">

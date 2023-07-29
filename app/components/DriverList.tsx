@@ -45,14 +45,14 @@ export default function DriverList() {
     const DriverLoop = () => {
         if (data) {
             return (
-                <>
+                <div>
                     {data &&
                         data
-                            .slice(3, 10)
+                            .slice(3, 20)
                             .map((data: DriverTypes) =>
                                 <DriverBlock key={data.driver_id} countryCode={data.country_code} forename={data.forename} surename={data.surename} points={data.points} position={data.position} driverId={data.driver_id} />
                             )}
-                </>
+                </div>
             )
         }
     }

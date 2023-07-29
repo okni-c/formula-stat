@@ -1,18 +1,19 @@
 export interface ConstructorTypes {
     constructor_id: string,
     points: string,
-    position: string,
+    position: number,
     wins: string,
     name: string,
     nationality: string,
     country_code: string,
+    constructor_ref: string,
 }
 
 export interface DriverTypes {
     driver_id: string,
     driver_ref: string,
     points: string,
-    position: string,
+    position: number,
     wins: string,
     forename: string,
     surename: string,
@@ -70,6 +71,7 @@ export interface RaceBlockTypes {
 export interface ContainerTypes {
     title: string,
     children: any,
+    dropDown?: boolean,
 }
 
 export interface YearlyRaceDataTypes {

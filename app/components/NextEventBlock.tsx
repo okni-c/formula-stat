@@ -29,19 +29,13 @@ export default function NextEventBlock({ nextEvent }: EventTypes) {
 
     return (
         <section className="flex flex-col mt-14 gap-4">
-            <div className="relative flex flex-col items-center justify-center px-6 py-3 overflow-hidden font-bold rounded-2xl shadow-2xl group bg-white dark:bg-neutral-950 cursor-pointer select-none" onClick={() => { open ? setOpen(false) : setOpen(true) }}>
+            <div className="relative flex flex-col items-center justify-center px-6 py-3 overflow-hidden font-bold rounded-3xl shadow-2xl group bg-white dark:bg-neutral-950 cursor-pointer select-none" onClick={() => { open ? setOpen(false) : setOpen(true) }}>
                 <span className="absolute z-0 inset-0 w-full h-full transition duration-300 ease-out opacity-0 bg-gradient-to-br dark:from-neutral-900 dark:via-neutral-800 dark:to-neutral-700 from-zinc-100 via-zinc-200 to-zinc-100 group-hover:opacity-40"></span>
-
                 <span className="absolute z-0 top-0 left-0 w-full bg-gradient-to-b from-white to-transparent opacity-5 h-1/3"></span>
-
                 <span className="absolute z-0 bottom-0 left-0 w-full h-1/3 bg-gradient-to-t from-white to-transparent opacity-5"></span>
-
                 <span className="absolute z-0 bottom-0 left-0 w-4 h-full bg-gradient-to-r from-white to-transparent opacity-5"></span>
-
                 <span className="absolute z-0 bottom-0 right-0 w-4 h-full bg-gradient-to-l from-white to-transparent opacity-5"></span>
                 <span className="absolute z-0 inset-0 w-full h-full border border-white rounded-md opacity-10"></span>
-
-
 
                 <div className='relative z-20 flex w-full items-center gap-4'>
                     <RolexClock />
@@ -58,8 +52,7 @@ export default function NextEventBlock({ nextEvent }: EventTypes) {
                         <motion.div key="nextEventDropdown" className='w-full'
                             initial={{ height: 0 }}
                             animate={{ height: "auto" }}
-                            exit={{ height: 0 }}
-                            transition={{ duration: 0.3 }}>
+                            exit={{ height: 0 }}>
                             <NextEventDropDown title='Sub Events' nextEvent={nextEvent} />
                         </motion.div>
                     }
