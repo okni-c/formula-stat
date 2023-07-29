@@ -32,8 +32,7 @@ export default function NextEventBlock({ nextEvent }: EventTypes) {
         <motion.section className="flex flex-col mt-14 gap-4"
         initial={{ height: '105px'}}
         animate={{ height: open }}
-        exit={{ height: '105px' }}
-        transition={{ duration: 0.2 }}>
+        exit={{ height: '105px' }}>
             <div className="relative flex flex-col items-center justify-start px-6 py-3 overflow-hidden font-bold rounded-3xl shadow-2xl group bg-white dark:bg-neutral-950 cursor-pointer select-none" onClick={() => { open === '105px' ? setOpen('auto') : setOpen('105px') }}>
                 <span className="absolute z-0 inset-0 w-full h-full transition duration-300 ease-out opacity-0 bg-gradient-to-br dark:from-neutral-900 dark:via-neutral-800 dark:to-neutral-700 from-zinc-100 via-zinc-200 to-zinc-100 group-hover:opacity-40"></span>
                 <span className="absolute z-0 top-0 left-0 w-full bg-gradient-to-b from-white to-transparent opacity-5 h-1/3"></span>

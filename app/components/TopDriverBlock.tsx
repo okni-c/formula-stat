@@ -3,25 +3,11 @@ import { useEffect, useState } from "react";
 import Flag from "react-world-flags";
 import { TopDriverBlockTypes } from "../interfaces/interfaces";
 
-const cssObject: any = [{ '1': 'dark:from-yellow-500 dark:to-black from-yellow-300 to-white' }, { '2': 'dark:from-zinc-500 dark:to-black from-zinc-400 to-white' }, { '3': 'dark:from-amber-800 dark:to-black from-amber-800 to-white' }];
-
 export default function TopDriverBlock({ countryCode, forename, surename, points, position, driverId, driverRef }: TopDriverBlockTypes) {
-    const [gradient, setGradient] = useState<string>('');
     const [sufix, setSufix] = useState<string>('');
     const router = useRouter();
 
     useEffect(() => {
-        // Check if position exists in cssObject array
-        const cssEntry = cssObject.find((entry: any) => entry.hasOwnProperty(position));
-
-        // If cssEntry exists, set the gradient state to its value
-        if (cssEntry) {
-            const key = Object.keys(cssEntry)[0];
-            setGradient(cssEntry[key]);
-        } else {
-            // If position is not found in cssObject, set a default value or handle accordingly
-            setGradient('from-neutral-800 to-black');
-        }
 
         switch (position) {
             case 1:
@@ -37,7 +23,7 @@ export default function TopDriverBlock({ countryCode, forename, surename, points
     }, [position]);
 
     return (
-        <div className={'border dark:border-neutral-800 border-neutral-300 flex flex-col justify-center items-center w-52 bg-gradient-to-b rounded-2xl drop-shadow-sm cursor-pointer mb-4 ' + gradient} onClick={() => router.push('/')}>
+        <div className={' dark:border-neutral-800 border-neutral-300 flex flex-col justify-center items-center w-52 rounded-2xl hover:shadow-[0_0_24px_0_rgba(14,14,14,0.2)] duration-150 ease-linear cursor-pointer mb-4'} onClick={() => router.push('/')}>
             <div className="relative w-full">
                 <p className="absolute top-2 left-3 dark:text-white text-black drop-shadow-md text-xl font-black flex items-center [text-shadow:_0_1px_3px_#e7e7e7a6]">{position}<span className="text-base font-semibold">{sufix}</span></p>
                 <p className="absolute top-2 right-3 dark:text-white text-black font-extrabold drop-shadow-md [text-shadow:_0_1px_3px_#e7e7e7a6]">{points} PTS</p>
