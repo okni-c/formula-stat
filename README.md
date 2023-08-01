@@ -22,7 +22,7 @@ Our MVP Version 1 will be coming to MacOS, Windows 10/11, and Linux August 4th, 
 ## Roadmap
 
 - Launch Version 1
-- Version 2 will include a redesign of the front end, as well as a dedicated server to fetch updates from the Ergast api. Additionally, we will bring driver, circut, and contructor data.
+- Version 2 will include a redesign of the front end, as well as a dedicated server to fetch updates from the Ergast api. Additionally, we will bring driver, circut, and constructor data.
 
 ## Usage
 
