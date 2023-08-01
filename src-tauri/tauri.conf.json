@@ -65,6 +65,7 @@
         "resizable": true,
         "visible": true,
         "center": true,
+        "title": "FormulaStat",
         "decorations": true
       }
     ]
