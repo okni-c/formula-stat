@@ -14,7 +14,7 @@ export default function YearSelector() {
         <>
             <AnimatePresence>
                 {pathname.startsWith('/races') &&
-                    <motion.nav className="z-[1] w-full max-w-[7rem] h-screen bg-black bg-opacity-20 shadow-lg fixed left-36"
+                    <motion.nav className="z-[1] w-full max-w-[7rem] h-screen bg-black bg-opacity-20 fixed left-36"
                         key="YearSelector"
                         initial={{ x: -100 }}
                         animate={{ x: 0 }}

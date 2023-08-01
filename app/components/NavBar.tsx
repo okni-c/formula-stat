@@ -33,7 +33,7 @@ export default function NavBar() {
     // }, [pathname])
 
     return (
-        <nav className="z-[2] w-full max-w-[9rem] h-screen shadow-lg dark:bg-neutral-900 bg-white fixed">
+        <nav className="z-[2] w-full max-w-[9rem] h-screen dark:bg-neutral-900 bg-white fixed">
             <div className="flex flex-col justify-start h-[100%]">
                 <Link href="/" className="mb-[61px] mt-5"><img src="/f1-logo.png" alt="F1 Logo" width={107} height={62} className=" ml-3 brightness-0 dark:invert-[1] invert-0" /></Link>
 
