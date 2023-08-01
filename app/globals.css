@@ -1,3 +1,49 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+/* ===== Scrollbar CSS ===== */
+/* Firefox */
+* {
+    scrollbar-width: auto;
+    scrollbar-color: #292929 #ffffff00;
+}
+
+/* Chrome, Edge, and Safari */
+*::-webkit-scrollbar {
+    width: 2px;
+}
+
+*::-webkit-scrollbar-track {
+    background: #b8b8b8;
+}
+
+*::-webkit-scrollbar-thumb {
+    background-color: #292929;
+    border-radius: 10px;
+    border: -1px none #0f0f0f;
+}
+
+/* Animation definition */
+@keyframes glowing {
+    0% {
+        box-shadow: 0 0 10px #ffffff;
+        /* Initial box-shadow */
+    }
+
+    50% {
+        box-shadow: 0 0 20px #7e7e7e;
+        /* Midpoint glow color */
+    }
+
+    100% {
+        box-shadow: 0 0 10px #222222;
+        /* Return to the initial box-shadow */
+    }
+}
+
+/* Apply the animation to the element */
+.animate-glow {
+    animation: glowing 1s infinite;
+    /* Use the glowing animation on hover */
+}

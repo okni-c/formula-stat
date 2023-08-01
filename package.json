@@ -10,6 +10,7 @@
     "tauri": "tauri"
   },
   "dependencies": {
+    "@tanstack/react-query": "^4.32.0",
     "@tauri-apps/api": "^1.4.0",
     "@types/node": "20.4.2",
     "@types/react": "18.2.15",
@@ -21,7 +22,11 @@
     "next": "13.4.10",
     "postcss": "8.4.26",
     "react": "18.2.0",
+    "react-clock": "^4.3.0",
+    "react-countdown": "^2.3.5",
+    "react-curved-text": "^2.0.2",
     "react-dom": "18.2.0",
+    "react-shadow": "^20.3.0",
     "react-world-flags": "^1.5.1",
     "tailwindcss": "3.3.3",
     "typescript": "5.1.6"
@@ -29,5 +34,12 @@
   "devDependencies": {
     "@tauri-apps/cli": "^1.4.0",
     "@types/react-world-flags": "^1.4.2"
-  }
+  },
+  "browserslist": [
+    "chrome 64",
+    "edge 79",
+    "firefox 67",
+    "opera 51",
+    "safari 12"
+  ]
 }

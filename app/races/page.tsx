@@ -1,37 +1,33 @@
 'use client'
 
-import { AnimatePresence, motion } from 'framer-motion'
+import { useQuery } from '@tanstack/react-query';
+import { fetchRaces } from '@/app/fetchers/fetchRaces';
 import RacePageHeader from '../components/RacePageHeader'
 import ListBlock from '../components/ListBlock'
 import RaceBlock from '../components/RaceBlock'
+import { LoadingScreen } from '@/app/components/LoadingScreen';
+import { YearlyRaceDataTypes } from '../interfaces/interfaces';
 
 export default function RacePage() {
+  const { data: race, isLoading, isError, isSuccess } = useQuery<any>({ queryKey: ['race', '2023'], queryFn: () => fetchRaces('2023') });
+
+  if (isLoading) {
+    return <LoadingScreen />
+  }
+
+  if (isError) {
+    return <div>Error occurred while fetching data.</div>;
+  }
+  if (isSuccess) {
     return (
-        <AnimatePresence>
-            <motion.main className="min-h-screen max-w-5xl w-full mx-auto px-10 overflow-hidden justify-center"
-                initial={{ opacity: 0, scale: 0.5 }}
-                animate={{ opacity: 1, scale: 1 }}
-                exit={{ opacity: 0, scale: 0.5 }}
-                transition={{
-                    duration: 0.1,
-                    delay: 0.1,
-                    ease: [0, 0.71, 0.2, 1.01]
-                }}>
-                    <RacePageHeader />
-                    <ListBlock title={'Past Events'}>
-                        <RaceBlock location={'Chinese GP'} winner={'Lewis Hamilton'} date={'Jul 10th, 2023'} flagcode={'cn'} />
-                        <RaceBlock location={'Chinese GP'} winner={'Lewis Hamilton'} date={'Jul 10th, 2023'} flagcode={'cn'} />
-                        <RaceBlock location={'Chinese GP'} winner={'Lewis Hamilton'} date={'Jul 10th, 2023'} flagcode={'cn'} />
-                        <RaceBlock location={'Chinese GP'} winner={'Lewis Hamilton'} date={'Jul 10th, 2023'} flagcode={'cn'} />
-                        <RaceBlock location={'Miami'} winner={'Lewis Hamilton'} date={'Jan 10th, 2023'} flagcode={'usa'} />
-                        <RaceBlock location={'Japan GP'} winner={'Lewis Hamilton'} date={'Aug 10th, 2023'} flagcode={'jp'} />
-                        <RaceBlock location={'Japan GP'} winner={'Lewis Hamilton'} date={'Aug 10th, 2023'} flagcode={'jp'} />
-                        <RaceBlock location={'Japan GP'} winner={'Lewis Hamilton'} date={'Aug 10th, 2023'} flagcode={'jp'} />
-                        <RaceBlock location={'Japan GP'} winner={'Lewis Hamilton'} date={'Aug 10th, 2023'} flagcode={'jp'} />
-                        <RaceBlock location={'Japan GP'} winner={'Lewis Hamilton'} date={'Aug 10th, 2023'} flagcode={'jp'} />
-                        <RaceBlock location={'Japan GP'} winner={'Lewis Hamilton'} date={'Aug 10th, 2023'} flagcode={'jp'} />
-                    </ListBlock>
-            </motion.main>
-        </AnimatePresence>
+      <main className="min-h-screen max-w-5xl w-full mx-auto px-10 overflow-hidden justify-center">
+        <RacePageHeader heading={'2023 Archive'} removeImg="true" />
+        <ListBlock title={'All Events'}>
+          {race && race.map((race: YearlyRaceDataTypes) =>
+            <RaceBlock key={race.circuit_id} circuitName={race.name} winner={'NULL'} date={race.date} time={race.time} flagcode={race.country_code} />
+          )}
+        </ListBlock>
+      </main>
     )
+  }
 }

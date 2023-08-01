@@ -29,7 +29,7 @@
         "icons/icon.icns",
         "icons/icon.ico"
       ],
-      "identifier": "com.tauri.dev",
+      "identifier": "FormulaStat",
       "longDescription": "",
       "macOS": {
         "entitlements": null,
@@ -38,7 +38,9 @@
         "providerShortName": null,
         "signingIdentity": null
       },
-      "resources": [],
+      "resources": [
+        "data/f1.db"
+      ],
       "shortDescription": "",
       "targets": "all",
       "windows": {
@@ -56,10 +58,15 @@
     "windows": [
       {
         "fullscreen": false,
-        "height": 600,
+        "width": 1001,
+        "height": 800,
+        "minWidth": 1000,
+        "minHeight": 500,
         "resizable": true,
+        "visible": true,
+        "center": true,
         "title": "FormulaStat",
-        "width": 800
+        "decorations": true
       }
     ]
   }
