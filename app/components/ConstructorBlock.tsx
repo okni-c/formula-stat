@@ -5,12 +5,12 @@ export default function ConstructorBlock({ countryCode, position, constructorId,
     const router = useRouter();
 
     return (
-        <div className="flex gap-6 justify-between items-center bg-gradient-to-r hover:dark:bg-neutral-800 from-transparent dark:to-black to-neutral-100 hover:bg-neutral-300 bg-opacity-20 cursor-pointer py-2 px-4 rounded-md my-1 drop-shadow-sm" onClick={() => router.push('/')}>
+        <div className="flex gap-6 justify-between items-center bg-gradient-to-r hover:dark:bg-neutral-800 from-transparent dark:to-black to-neutral-100 hover:bg-neutral-300 bg-opacity-20 cursor-pointer py-2 px-4 rounded-md my-1 " onClick={() => router.push('/')}>
             <div className="flex gap-8 items-center justify-start">
                 <div className="max-w-[8px] w-full">
                     <p className="dark:text-white text-black text-lg font-semibold">{position}</p>
                 </div>
-                <div className="w-16 h-10 drop-shadow-md flex justify-center">
+                <div className="w-16 h-10  flex justify-center">
                     <img className='object-cover' src={'/constructors/' + constructorRef + '_logo.png'} />
                 </div>
             </div>

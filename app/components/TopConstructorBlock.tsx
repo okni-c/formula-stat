@@ -36,11 +36,11 @@ export default function TopConstructorBlock({ countryCode, position, constructor
     }, [position]);
 
     return (
-        <div className={'border dark:border-neutral-800 border-neutral-300 flex flex-col justify-between items-center w-52 bg-gradient-to-b rounded-2xl drop-shadow-sm cursor-pointer mb-4 pt-9 px-5' + gradient} onClick={() => router.push('/')}>
+        <div className={'border dark:border-neutral-800 border-neutral-300 flex flex-col justify-between items-center w-52 bg-gradient-to-b rounded-2xl  cursor-pointer mb-4 pt-9 px-5' + gradient} onClick={() => router.push('/')}>
             <div className="relative w-full">
-                <p className="absolute top-[-27px] left-[-5px] dark:text-white text-black drop-shadow-md text-xl font-black flex items-center [text-shadow:_0_1px_3px_#e7e7e7a6]">{position}<span className="text-base font-semibold">{sufix}</span></p>
-                <p className="absolute top-[-25px] right-[-5px] dark:text-white text-black font-extrabold drop-shadow-md [text-shadow:_0_1px_3px_#e7e7e7a6]">{points} PTS</p>
-                <div className="hidden w-10 h-7 drop-shadow-md absolute top-9 right-3">
+                <p className="absolute top-[-27px] left-[-5px] dark:text-white text-black  text-xl font-black flex items-center [text-shadow:_0_1px_3px_#e7e7e7a6]">{position}<span className="text-base font-semibold">{sufix}</span></p>
+                <p className="absolute top-[-25px] right-[-5px] dark:text-white text-black font-extrabold  [text-shadow:_0_1px_3px_#e7e7e7a6]">{points} PTS</p>
+                <div className="hidden w-10 h-7  absolute top-9 right-3">
                     <Flag code={countryCode} className="rounded-[0.25rem] object-cover" />
                 </div>
             </div>

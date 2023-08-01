@@ -25,9 +25,9 @@ export default function TopDriverBlock({ countryCode, forename, surename, points
     return (
         <div className={' dark:border-neutral-800 border-neutral-300 flex flex-col justify-center items-center w-52 rounded-2xl hover:shadow-[0_0_24px_0_rgba(14,14,14,0.2)] duration-150 ease-linear cursor-pointer mb-4'} onClick={() => router.push('/')}>
             <div className="relative w-full">
-                <p className="absolute top-2 left-3 dark:text-white text-black drop-shadow-md text-xl font-black flex items-center [text-shadow:_0_1px_3px_#e7e7e7a6]">{position}<span className="text-base font-semibold">{sufix}</span></p>
-                <p className="absolute top-2 right-3 dark:text-white text-black font-extrabold drop-shadow-md [text-shadow:_0_1px_3px_#e7e7e7a6]">{points} PTS</p>
-                <div className="w-10 h-7 drop-shadow-md absolute top-9 right-3">
+                <p className="absolute top-2 left-3 dark:text-white text-black  text-xl font-black flex items-center [text-shadow:_0_1px_3px_#e7e7e7a6]">{position}<span className="text-base font-semibold">{sufix}</span></p>
+                <p className="absolute top-2 right-3 dark:text-white text-black font-extrabold  [text-shadow:_0_1px_3px_#e7e7e7a6]">{points} PTS</p>
+                <div className="w-10 h-7  absolute top-9 right-3">
                     <Flag code={countryCode} className="rounded-[0.25rem] object-cover" />
                 </div>
             </div>

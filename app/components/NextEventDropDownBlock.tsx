@@ -20,7 +20,7 @@ export default function NextEventDropDownBlock({ circuitName, date, time }: Next
     return (
         <>
             {!hidden &&
-                <div className={'flex gap-6 justify-between items-center bg-gradient-to-r from-transparent dark:to-black to-neutral-100 bg-opacity-20 py-2 px-4 rounded-md my-1 drop-shadow-sm'}>
+                <div className={'flex gap-6 justify-between items-center bg-gradient-to-r from-transparent dark:to-black to-neutral-100 bg-opacity-20 py-2 px-4 rounded-md my-1 '}>
                     <div className="flex items-center justify-start min-w-[160px]">
                         <p className="dark:text-white text-black">{circuitName}</p>
                     </div>
