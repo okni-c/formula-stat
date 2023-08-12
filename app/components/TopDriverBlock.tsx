@@ -31,7 +31,7 @@ export default function TopDriverBlock({ countryCode, forename, surename, points
                     <Flag code={countryCode} className="rounded-[0.25rem] object-cover" />
                 </div>
             </div>
-            <img src={'/drivers/' + driverRef + '_ds.png'} alt="TopDriver photo" className="w-44" />
+            <img src={'/drivers/' + driverRef + '_ds.png'} alt="TopDriver photo" width={176} height={176} className="w-44" />
             <div className="dark:bg-black bg-white rounded-bl-2xl rounded-br-2xl w-full flex justify-center py-2">
                 <p className="dark:text-white text-black font-black text-lg">{forename} {surename}</p>
             </div>

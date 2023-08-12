@@ -47,3 +47,18 @@
     animation: glowing 1s infinite;
     /* Use the glowing animation on hover */
 }
+
+@font-face {
+    font-family: "f1Reg";
+    src: url("../public/fonts/Formula1-Regular.otf");
+}
+
+@font-face {
+    font-family: "f1Bold";
+    src: url("../public/fonts/Formula1-Bold.otf");
+}
+
+@font-face {
+    font-family: "f1Wide";
+    src: url("../public/fonts/Formula1-Wide.otf");
+}

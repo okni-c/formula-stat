@@ -27,7 +27,7 @@ export default function Home() {
       <motion.main className="min-h-screen max-w-5xl w-full mx-auto px-10 overflow-hidden justify-center no-scrollbar" initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
       exit={{ opacity: 0 }}
-      transition={{ duration: 0.6 }}>
+      transition={{ duration: 0.15 }}>
         <div>
           <HomePageHeader circuitName={nextEvent.grand_prix_name} round={nextEvent.round} removeImg={false} />
           <NextEventBlock nextEvent={nextEvent} />
